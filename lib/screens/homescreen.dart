@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gradient_widgets/gradient_widgets.dart';
+import 'package:pocketify/models/expense_model.dart';
+import 'package:pocketify/utils/initialise_expenses_lists.dart';
 import 'package:pocketify/utils/themes.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -36,93 +38,33 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          Expanded(
-            child: SafeArea(
-              child: Container(
-                color: context.cardColor,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          CupertinoIcons.calendar,
-                          color: Theme.of(context).colorScheme.secondary,
-                        ).p8(),
-                        10.widthBox,
-                        Text(
-                          "2022-01",
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.secondary),
-                        ),
-                        Text(
-                          "Balance",
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.secondary),
-                        ).pOnly(left: 8),
-                      ],
+          SingleChildScrollView(
+            controller: _scrollController,
+            child: Container(
+              height: context.screenHeight * 1.25,
+              color: context.cardColor,
+              child: Column(
+                children: [
+                  TopCardHomeScreen(),
+                  Expanded(
+                    flex: 75,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(15),
+                          topRight: Radius.circular(15)),
+                      child: Container(
+                        color: Colors.white,
+                        child: BottomCardHomeScreen(),
+                      ),
                     ),
-                    Text(
-                      "-666",
-                      style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.secondary),
-                    ).pSymmetric(h: 15),
-                    Row(
-                      children: [
-                        Text(
-                          "Expense:",
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: Theme.of(context).colorScheme.secondary),
-                        ).pOnly(left: 15, right: 5),
-                        Text(
-                          "-666",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: Theme.of(context).colorScheme.secondary),
-                        ).pSymmetric(h: 2)
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          "Income:",
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: Theme.of(context).colorScheme.secondary),
-                        ).pOnly(left: 15, right: 5),
-                        Text(
-                          "0",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: Theme.of(context).colorScheme.secondary),
-                        ).pSymmetric(h: 2)
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-          DraggableScrollableSheet(
-            initialChildSize: 0.75,
-            minChildSize: 0.75,
-            maxChildSize: 1,
-            builder: (context, controller) => ClipRRect(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(15), topRight: Radius.circular(15)),
-              child: Container(
-                color: Colors.white,
-                child: BottomCardHomeScreen(controller: controller),
+                  ),
+                ],
               ),
             ),
           ),
           PreferredSize(
-              child: FadeAppBar(scrollOffset: _scrollControlOffset),
-              preferredSize: Size(MediaQuery.of(context).size.width, 30))
+              child: FadingAppBar(scrollOffset: _scrollControlOffset),
+              preferredSize: Size(MediaQuery.of(context).size.width, 30)),
         ],
       ),
       bottomNavigationBar: BubbleBottomBar(
@@ -215,52 +157,118 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class BottomCardHomeScreen extends StatelessWidget {
-  ScrollController controller;
-  BottomCardHomeScreen({Key? key, required this.controller})
-      : super(key: key) {}
+class TopCardHomeScreen extends StatelessWidget {
+  const TopCardHomeScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      controller: controller,
-      child: Column(
-        children: [
-          Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-            ),
-            color: Vx.white,
-            elevation: 10,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return SafeArea(
+      child: Container(
+        height: 150,
+        color: context.cardColor,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                "Budget Setting"
-                    .text
-                    .xl
-                    .fontWeight(FontWeight.bold)
-                    .make()
-                    .p8(),
-                GradientProgressIndicator(
-                  gradient: LinearGradient(
-                      colors: [AppTheme.progressBase, AppTheme.progressMarker]),
-                  value: 0.55,
+                Icon(
+                  CupertinoIcons.calendar,
+                  color: Theme.of(context).colorScheme.secondary,
                 ).p8(),
+                10.widthBox,
+                Text(
+                  "2022-01  Balance",
+                  style:
+                      TextStyle(color: Theme.of(context).colorScheme.secondary),
+                ),
               ],
             ),
-          ).p(0),
-          Column(
-            children: [
-              ListView.builder(
-                  itemCount: 5,
-                  itemBuilder: (context, index) {
-                    return ListTile();
-                  }).h(100)
-            ],
-          )
-        ],
+            Text(
+              "-666",
+              style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.secondary),
+            ).pSymmetric(h: 15),
+            Row(
+              children: [
+                Text(
+                  "Expense:",
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: Theme.of(context).colorScheme.secondary),
+                ).pOnly(left: 15, right: 5),
+                Text(
+                  "-666",
+                  style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: Theme.of(context).colorScheme.secondary),
+                ).pSymmetric(h: 2)
+              ],
+            ),
+            Row(
+              children: [
+                Text(
+                  "Income:",
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: Theme.of(context).colorScheme.secondary),
+                ).pOnly(left: 15, right: 5),
+                Text(
+                  "0",
+                  style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: Theme.of(context).colorScheme.secondary),
+                ).pSymmetric(h: 2)
+              ],
+            )
+          ],
+        ),
       ),
+    );
+  }
+}
+
+class BottomCardHomeScreen extends StatelessWidget {
+  BottomCardHomeScreen({
+    Key? key,
+  }) : super(key: key) {}
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+          ),
+          color: Vx.white,
+          elevation: 10,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              "Budget Setting".text.xl.fontWeight(FontWeight.bold).make().p8(),
+              GradientProgressIndicator(
+                gradient: LinearGradient(
+                    colors: [AppTheme.progressBase, AppTheme.progressMarker]),
+                value: 0.55,
+              ).p8(),
+            ],
+          ),
+        ).p(0),
+        ListView.builder(
+            physics: AlwaysScrollableScrollPhysics(),
+            scrollDirection: Axis.vertical,
+            itemCount: ExpenseModel.dateList.length,
+            itemBuilder: (context, index) {
+              ExpenseModel.expenseMap[ExpenseModel.dateList[index]];
+              return DateWiseExpenseWidget(date: ExpenseModel.dateList[index]);
+            }).h(900)
+      ],
     );
   }
 
@@ -269,10 +277,25 @@ class BottomCardHomeScreen extends StatelessWidget {
   }
 }
 
-class FadeAppBar extends StatelessWidget {
+class DateWiseExpenseWidget extends StatelessWidget {
+  final DateTime date;
+  const DateWiseExpenseWidget({Key? key, required this.date}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Vx.gray100,
+      child: Column(
+        children: InitialiseExpensesList.initialiseAndFetchExpenses(date),
+      ),
+    ).p12();
+  }
+}
+
+class FadingAppBar extends StatelessWidget {
   final double scrollOffset;
 
-  const FadeAppBar({
+  const FadingAppBar({
     Key? key,
     required this.scrollOffset,
   }) : super(key: key);
@@ -280,9 +303,42 @@ class FadeAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 100,
-      color:
-          Colors.white.withOpacity((scrollOffset / 350).clamp(0, 1).toDouble()),
+      height: 85,
+      color: context.cardColor
+          .withOpacity((scrollOffset / 250).clamp(0, 1).toDouble()),
+      child: SafeArea(
+        child: Opacity(
+          opacity: (scrollOffset / 250).clamp(0, 1).toDouble(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                "Expense: -4200",
+                style: TextStyle(
+                    fontSize: 14,
+                    color: Theme.of(context).colorScheme.secondary),
+              ).pOnly(right: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "2022-01",
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: Theme.of(context).colorScheme.secondary),
+                  ).pOnly(left: 15, right: 5),
+                  Text(
+                    "Income:0",
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: Theme.of(context).colorScheme.secondary),
+                  ).pOnly(left: 15, right: 5),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

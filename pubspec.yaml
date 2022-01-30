@@ -42,6 +42,7 @@ dependencies:
   bubble_bottom_bar: 
   dependencies:
   gradient_widgets:
+  intl: ^0.17.0
 
 
 dev_dependencies:
@@ -71,6 +72,7 @@ flutter:
     - assets/
     - assets/images/
     - assets/files/
+    - assets/icons/
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
