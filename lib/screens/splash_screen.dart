@@ -15,7 +15,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
-  void initState()  {
+  void initState() {
     // TODO: implement initState
     super.initState();
     moveToHomeScreen();
@@ -50,7 +50,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       fontFamily: GoogleFonts.poppins().fontFamily,
                       color: Color.fromRGBO(96, 9, 100, 1),
                       fontSize: 15),
-                      duration: Duration(milliseconds: 1200),
+                  duration: Duration(milliseconds: 1200),
                 ),
                 RotateAnimatedText(
                   "Get expense insights",
@@ -58,7 +58,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       fontFamily: GoogleFonts.poppins().fontFamily,
                       color: Color.fromRGBO(96, 9, 100, 1),
                       fontSize: 15),
-                      duration: Duration(milliseconds: 1200),
+                  duration: Duration(milliseconds: 1200),
                 ),
                 RotateAnimatedText(
                   "Make worthy savings",
@@ -66,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       fontFamily: GoogleFonts.poppins().fontFamily,
                       color: Color.fromRGBO(96, 9, 100, 1),
                       fontSize: 15),
-                      duration: Duration(milliseconds: 1200),
+                  duration: Duration(milliseconds: 1200),
                 ),
               ]),
             )
@@ -76,8 +76,8 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 
-  void moveToHomeScreen() async{
+  void moveToHomeScreen() async {
     await Future.delayed(Duration(milliseconds: 7200));
-    Navigator.pushReplacementNamed(context, Routes.HomeScreenRoute);
+    Navigator.pushReplacementNamed(context, Routes.CalculatorScreen);
   }
 }

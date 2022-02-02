@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:gradient_widgets/gradient_widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:pocketify/models/expense_model.dart';
+import 'package:pocketify/utils/themes.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class InitialiseExpensesList {
   static List<Widget> myExpenses = [];
   static double total = 0.0;
+  static int count = 0;
 
   static List<Widget> initialiseAndFetchExpenses(DateTime date) {
     //Adding expenses of particular date
@@ -43,6 +46,7 @@ class InitialiseExpensesList {
       ).p8(),
     );
     total = 0;
+    count++;
     return myExpenses;
   }
 }

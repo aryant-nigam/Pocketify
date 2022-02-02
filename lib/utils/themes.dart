@@ -4,9 +4,10 @@ import 'package:velocity_x/velocity_x.dart';
 
 class AppTheme {
   static final Color FAB_light = Color.fromRGBO(96, 9, 100, 1);
-  static final Color FAB_dark = Color.fromRGBO(70, 9, 80,1);
+  static final Color FAB_dark = Color.fromRGBO(70, 9, 80, 1);
   static final Color progressBase = Vx.purple100;
   static final Color progressMarker = Color.fromRGBO(96, 9, 100, 1);
+  static final Color BASE_dullAccent = Color.fromRGBO(238, 238, 238, 1.0);
   static Color cream = Color(0xfff5f5f5);
 
   static ThemeData lightTheme(BuildContext context) {

@@ -89,11 +89,59 @@ class ExpenseModel {
         expense: 500,
         date: DateTime(2022, 1, 30),
       ),
+    ],
+    DateTime(2022, 2, 1): [
+      ExpenseModel(
+        id: 1,
+        title: "Food",
+        icon: AppIcons.food,
+        expense: 500,
+        date: DateTime(2022, 1, 30),
+      ),
+      ExpenseModel(
+        id: 2,
+        title: "Entertainment",
+        icon: AppIcons.entertainment,
+        expense: 500,
+        date: DateTime(2022, 1, 30),
+      ),
+      ExpenseModel(
+        id: 3,
+        title: "Health",
+        icon: AppIcons.health,
+        expense: 500,
+        date: DateTime(2022, 1, 30),
+      ),
+    ],
+    DateTime(2022, 2, 2): [
+      ExpenseModel(
+        id: 1,
+        title: "Food",
+        icon: AppIcons.food,
+        expense: 500,
+        date: DateTime(2022, 1, 30),
+      ),
+      ExpenseModel(
+        id: 2,
+        title: "Entertainment",
+        icon: AppIcons.entertainment,
+        expense: 500,
+        date: DateTime(2022, 1, 30),
+      ),
+      ExpenseModel(
+        id: 3,
+        title: "Health",
+        icon: AppIcons.health,
+        expense: 500,
+        date: DateTime(2022, 1, 30),
+      ),
     ]
   };
   static List<DateTime> dateList = [
     DateTime(2022, 1, 30),
-    DateTime(2022, 1, 31)
+    DateTime(2022, 1, 31),
+    DateTime(2022, 2, 1),
+    DateTime(2022, 2, 2)
   ];
 
   void addToExpenses(ExpenseModel expenseModel) {

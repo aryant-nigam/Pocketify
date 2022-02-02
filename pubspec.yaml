@@ -43,6 +43,7 @@ dependencies:
   dependencies:
   gradient_widgets:
   intl: ^0.17.0
+  math_expressions: ^2.3.0
 
 
 dev_dependencies:

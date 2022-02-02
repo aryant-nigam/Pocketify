@@ -18,10 +18,11 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late int currentIndex;
   late ScrollController _scrollController;
-  double _scrollControlOffset = 0.0;
+  late double _scrollControlOffset = 0.0;
 
   _scrollListener() {
     _scrollControlOffset = _scrollController.offset;
+
     setState(() {});
   }
 
@@ -36,36 +37,79 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            controller: _scrollController,
-            child: Container(
-              height: context.screenHeight * 1.25,
-              color: context.cardColor,
-              child: Column(
-                children: [
-                  TopCardHomeScreen(),
-                  Expanded(
-                    flex: 75,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(15),
-                          topRight: Radius.circular(15)),
-                      child: Container(
-                        color: Colors.white,
-                        child: BottomCardHomeScreen(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+      body: Container(
+        color: context.cardColor,
+        child: Stack(
+          children: [
+            TopCardHomeScreen(),
+            NotificationListener<DraggableScrollableNotification>(
+              onNotification: (notification) {
+                _scrollControlOffset =
+                    (notification.extent - notification.minExtent) /
+                        (notification.maxExtent - notification.minExtent);
+                setState(() {});
+                return true;
+              },
+              child: DraggableScrollableSheet(
+                  initialChildSize: .75,
+                  minChildSize: .75,
+                  builder: (BuildContext context,
+                      ScrollController scrollcontroller) {
+                    return Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(15),
+                              topRight: Radius.circular(15)),
+                        ),
+                        child: Stack(
+                          children: [
+                            Container(
+                              height: 70,
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(10),
+                                      topRight: Radius.circular(10)),
+                                ),
+                                color: Vx.white,
+                                elevation: 6,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    "Budget Setting"
+                                        .text
+                                        .xl
+                                        .fontWeight(FontWeight.bold)
+                                        .make()
+                                        .p8(),
+                                    GradientProgressIndicator(
+                                      gradient: LinearGradient(colors: [
+                                        AppTheme.progressBase,
+                                        AppTheme.progressMarker
+                                      ]),
+                                      value: 0.55,
+                                    ).p4(),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            ListView.builder(
+                                controller: scrollcontroller,
+                                itemCount: ExpenseModel.dateList.length,
+                                itemBuilder: (context, int index) {
+                                  ExpenseModel
+                                      .expenseMap[ExpenseModel.dateList[index]];
+                                  return DateWiseExpenseWidget(
+                                      date: ExpenseModel.dateList[index]);
+                                }).pOnly(top: 30),
+                          ],
+                        ));
+                  }),
             ),
-          ),
-          PreferredSize(
-              child: FadingAppBar(scrollOffset: _scrollControlOffset),
-              preferredSize: Size(MediaQuery.of(context).size.width, 30)),
-        ],
+            FadingAppBar(scrollOffset: _scrollControlOffset)
+          ],
+        ),
       ),
       bottomNavigationBar: BubbleBottomBar(
         backgroundColor: Vx.white,
@@ -239,36 +283,21 @@ class BottomCardHomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-          ),
-          color: Vx.white,
-          elevation: 10,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              "Budget Setting".text.xl.fontWeight(FontWeight.bold).make().p8(),
-              GradientProgressIndicator(
-                gradient: LinearGradient(
-                    colors: [AppTheme.progressBase, AppTheme.progressMarker]),
-                value: 0.55,
-              ).p8(),
-            ],
-          ),
-        ).p(0),
-        ListView.builder(
-            physics: AlwaysScrollableScrollPhysics(),
-            scrollDirection: Axis.vertical,
-            itemCount: ExpenseModel.dateList.length,
-            itemBuilder: (context, index) {
-              ExpenseModel.expenseMap[ExpenseModel.dateList[index]];
-              return DateWiseExpenseWidget(date: ExpenseModel.dateList[index]);
-            }).h(900)
-      ],
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      physics: AlwaysScrollableScrollPhysics(),
+      child: Column(
+        children: [
+          ListView.builder(
+              shrinkWrap: true,
+              itemCount: ExpenseModel.dateList.length,
+              itemBuilder: (context, index) {
+                ExpenseModel.expenseMap[ExpenseModel.dateList[index]];
+                return DateWiseExpenseWidget(
+                    date: ExpenseModel.dateList[index]);
+              })
+        ],
+      ),
     );
   }
 
@@ -304,11 +333,10 @@ class FadingAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 85,
-      color: context.cardColor
-          .withOpacity((scrollOffset / 250).clamp(0, 1).toDouble()),
+      color: context.cardColor.withOpacity(scrollOffset.toDouble()),
       child: SafeArea(
         child: Opacity(
-          opacity: (scrollOffset / 250).clamp(0, 1).toDouble(),
+          opacity: scrollOffset.toDouble(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -342,3 +370,28 @@ class FadingAppBar extends StatelessWidget {
     );
   }
 }
+
+/*
+*   DraggableScrollableSheet(
+              minChildSize: 0.75,
+              initialChildSize: 0.75,
+              maxChildSize: 1,
+              builder: (context, scrollController) => Material(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(15),
+                      topRight: Radius.circular(15)),
+                ),
+                color: Colors.white,
+                elevation: 8,
+                child: ListView.builder(
+                    itemCount: ExpenseModel.dateList.length,
+                    shrinkWrap: true,
+                    controller: _scrollController,
+                    itemBuilder: (context, index) {
+                      ExpenseModel.expenseMap[ExpenseModel.dateList[index]];
+                      return DateWiseExpenseWidget(
+                          date: ExpenseModel.dateList[index]);
+                    }),
+              ),
+            ),*/

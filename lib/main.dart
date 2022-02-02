@@ -1,5 +1,6 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:pocketify/screens/calculator_screen.dart';
 import 'package:pocketify/screens/homescreen.dart';
 import 'package:pocketify/screens/splash_screen.dart';
 import 'package:pocketify/utils/routes.dart';
@@ -21,7 +22,12 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme(context),
       home: SplashScreen(),
       routes: {
-        Routes.HomeScreenRoute : (context){return HomeScreen();}
+        Routes.HomeScreenRoute: (context) {
+          return CalculatorScreen();
+        },
+        Routes.CalculatorScreen: (context) {
+          return CalculatorScreen();
+        }
       },
     );
   }
