@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pocketify/models/expense_model.dart';
 import 'package:pocketify/screens/calculator_screen.dart';
 import 'package:pocketify/screens/edit_screen.dart';
+import 'package:pocketify/screens/expense_visualization_screen.dart';
 import 'package:pocketify/screens/homescreen.dart';
 import 'package:pocketify/screens/splash_screen.dart';
 import 'package:pocketify/screens/vip_subscription_screen.dart';
@@ -46,9 +47,9 @@ class MyApp extends StatelessWidget {
         Routes.VIPSubscriptionScreen: (context) {
           return VIPSubscriptionScreen();
         },
-        /*Routes.ChartVisualizationScreen: (context) {
-          return ChartVisualizationScreen();
-        }*/
+        Routes.ExpenseVisualizationScreen: (context) {
+          return ExpenseVisualizationScreen();
+        }
       },
     );
   }

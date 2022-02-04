@@ -206,6 +206,8 @@ class _HomeScreenState extends State<HomeScreen> {
     currentIndex = index!;
     setState(() {});
     if (currentIndex == 0) scaffoldKey.currentState?.openDrawer();
+    if (currentIndex == 2)
+      Navigator.pushNamed(context, Routes.ExpenseVisualizationScreen);
     if (currentIndex == 3)
       Navigator.pushNamed(context, Routes.VIPSubscriptionScreen);
   }

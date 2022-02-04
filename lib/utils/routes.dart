@@ -5,4 +5,6 @@ class Routes {
   static final String CalculatorScreen = "\CalculatorScreen";
   static final String EditScreen = "\EditScreen";
   static final String VIPSubscriptionScreen = "\VIPSubscriptionScreen";
+  static final String ExpenseVisualizationScreen =
+      "\ExpenseVisualizationScreen";
 }
