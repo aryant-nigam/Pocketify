@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:math_expressions/math_expressions.dart';
 import 'package:pocketify/models/expense_model.dart';
 import 'package:pocketify/utils/themes.dart';
@@ -12,7 +13,8 @@ class CalculatorScreen extends StatefulWidget {
   State<CalculatorScreen> createState() => _CalculatorScreenState();
 }
 
-class _CalculatorScreenState extends State<CalculatorScreen> {
+class _CalculatorScreenState extends State<CalculatorScreen>
+    with TickerProviderStateMixin {
   ScrollController controller = ScrollController();
   double _initialSheetChildSize = 0.07;
   double _dragScrollSheetExtent = 0;
@@ -29,6 +31,11 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   late BuildContext draggableSheetContext;
   String cost = "0";
 
+  bool categoryVisible = false;
+
+  //Edit utility variables
+  String categorySelected = "Food";
+
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
@@ -38,9 +45,19 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
   @override
   Widget build(BuildContext context) {
+    TabController tabController = TabController(length: 2, vsync: this);
     return Scaffold(
       appBar: AppBar(
-        //iconTheme: IconThemeData(color: Colors.white),
+        leading: GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Icon(
+            CupertinoIcons.back,
+            color: Colors.white,
+            size: 30,
+          ),
+        ),
         backgroundColor: context.cardColor,
       ),
       body: Container(
@@ -56,11 +73,93 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Image.asset(
-                    AppIcons.food,
-                    height: 35,
-                    width: 35,
-                  ).pOnly(left: 5),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        categoryVisible = !categoryVisible;
+                      });
+                      if (categoryVisible) {
+                        showModalBottomSheet(
+                            transitionAnimationController: AnimationController(
+                                vsync: this,
+                                duration: Duration(milliseconds: 600),
+                                animationBehavior: AnimationBehavior.normal),
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Container(
+                                height: 350,
+                                width: context.screenWidth,
+                                color: Colors.white,
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      height: 50,
+                                      width: context.screenWidth,
+                                      child: Align(
+                                        alignment: Alignment.center,
+                                        child: TabBar(
+                                          controller: tabController,
+                                          isScrollable: true,
+                                          indicator: UnderlineTabIndicator(
+                                            borderSide: BorderSide(
+                                              width: 2,
+                                              color: context.cardColor,
+                                            ),
+                                          ),
+                                          labelPadding:
+                                              const EdgeInsets.only(right: 20),
+                                          indicatorPadding:
+                                              const EdgeInsets.only(right: 20),
+                                          labelColor: context.cardColor,
+                                          unselectedLabelColor: Vx.gray400,
+                                          tabs: [
+                                            Text(
+                                              "EXPENSES",
+                                            ),
+                                            "INCOME".text.make()
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      height: 300,
+                                      width: context.screenWidth,
+                                      child: TabBarView(
+                                        controller: tabController,
+                                        children: [
+                                          ExpenseCategoryListBuilder(
+                                            selectedExpenseCategoryCallback:
+                                                (String
+                                                    expenseCategorySelected) {
+                                              this.categorySelected =
+                                                  expenseCategorySelected;
+                                              setState(() {});
+                                            },
+                                          ),
+                                          IncomeCategoryListBuilder(
+                                            selectedIncomeCategoryCallback:
+                                                (String
+                                                    IncomeCategorySelected) {
+                                              this.categorySelected =
+                                                  IncomeCategorySelected;
+                                              setState(() {});
+                                            },
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              );
+                            });
+                      }
+                    },
+                    child: Image.asset(
+                      "assets/icons/${categorySelected.toLowerCase()}.png",
+                      height: 45,
+                      width: 45,
+                    ).pOnly(left: 10),
+                  ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -562,5 +661,122 @@ class Calculator extends StatelessWidget {
         ],
       ).pOnly(top: 45),
     );
+  }
+}
+
+class CategoryBottomSheet extends StatelessWidget {
+  double height = 0;
+  CategoryBottomSheet({Key? key, required this.height}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+      duration: Duration(seconds: 3),
+      curve: Curves.easeInCubic,
+      color: Colors.white,
+      width: context.screenWidth,
+      height: height,
+    );
+  }
+}
+
+class ExpenseCategoryListBuilder extends StatefulWidget {
+  final void Function(String) selectedExpenseCategoryCallback;
+  const ExpenseCategoryListBuilder(
+      {Key? key, required this.selectedExpenseCategoryCallback})
+      : super(key: key);
+
+  @override
+  State<ExpenseCategoryListBuilder> createState() =>
+      _ExpenseCategoryListBuilderState();
+}
+
+class _ExpenseCategoryListBuilderState
+    extends State<ExpenseCategoryListBuilder> {
+  int selectedCategory = -1;
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+        itemCount: ExpenseModel.ExpenseCategoryList.length,
+        itemBuilder: (context, index) {
+          String category = ExpenseModel.ExpenseCategoryList[index];
+          return Column(
+            children: [
+              ListTile(
+                leading: Image.asset(
+                  "assets/icons/${category.toLowerCase()}.png",
+                  height: 25,
+                  width: 25,
+                ),
+                title: Text(category),
+                trailing: Visibility(
+                  visible: index == selectedCategory,
+                  child: Icon(
+                    Icons.done,
+                    color: context.cardColor,
+                  ),
+                ),
+                onTap: () {
+                  selectedCategory = index;
+                  widget.selectedExpenseCategoryCallback(category);
+                  setState(() {});
+                },
+              ),
+              Divider(
+                height: 3,
+              )
+            ],
+          );
+        });
+  }
+}
+
+class IncomeCategoryListBuilder extends StatefulWidget {
+  final void Function(String) selectedIncomeCategoryCallback;
+  const IncomeCategoryListBuilder(
+      {Key? key, required this.selectedIncomeCategoryCallback})
+      : super(key: key);
+
+  @override
+  State<IncomeCategoryListBuilder> createState() =>
+      _IncomeCategoryListBuilderState();
+}
+
+class _IncomeCategoryListBuilderState extends State<IncomeCategoryListBuilder> {
+  int selectedCategory = -1;
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+        itemCount: ExpenseModel.ExpenseCategoryList.length,
+        itemBuilder: (context, index) {
+          String category = ExpenseModel.ExpenseCategoryList[index];
+          return Column(
+            children: [
+              ListTile(
+                leading: Image.asset(
+                  "assets/icons/${category.toLowerCase()}.png",
+                  height: 25,
+                  width: 25,
+                ),
+                title: Text(category),
+                trailing: Visibility(
+                  visible: index == selectedCategory,
+                  child: Icon(
+                    Icons.done,
+                    color: context.cardColor,
+                  ),
+                ),
+                onTap: () {
+                  selectedCategory = index;
+                  widget.selectedIncomeCategoryCallback(category);
+                  setState(() {});
+                },
+              ),
+              Divider(
+                height: 3,
+              )
+            ],
+          );
+        });
   }
 }

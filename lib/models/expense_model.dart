@@ -26,7 +26,9 @@ class AppIcons {
   static const String transportation = "assets/icons/transportation.png";
   static const String travel = "assets/icons/travel.png";
   static const String vegetables = "assets/icons/vegetables.png";
-  static const String vines = "assets/icons/vines.png";
+  static const String Wine = "assets/icons/vines.png";
+  static const String block_ads = "assets/icons/block_ads.png";
+  static const String xls = "assets/icons/xls.png";
 }
 
 class ExpenseModel {
@@ -35,106 +37,110 @@ class ExpenseModel {
   final String icon;
   final double expense;
   final DateTime date;
+  final String category;
+  String? remark;
 
   ExpenseModel(
       {required this.id,
       required this.title,
       required this.icon,
       required this.expense,
-      required this.date});
+      required this.date,
+      required this.category,
+      this.remark});
 
   static Map<DateTime, List<ExpenseModel>> expenseMap = {
     DateTime(2022, 1, 30): [
       ExpenseModel(
-        id: 1,
-        title: "Food",
-        icon: AppIcons.food,
-        expense: 500,
-        date: DateTime(2022, 1, 30),
-      ),
+          id: 1,
+          title: "Food",
+          icon: AppIcons.food,
+          expense: 500,
+          date: DateTime(2022, 1, 30),
+          category: "Expenses"),
       ExpenseModel(
-        id: 2,
-        title: "Entertainment",
-        icon: AppIcons.entertainment,
-        expense: 500,
-        date: DateTime(2022, 1, 30),
-      ),
+          id: 2,
+          title: "Entertainment",
+          icon: AppIcons.entertainment,
+          expense: 500,
+          date: DateTime(2022, 1, 30),
+          category: "Expenses"),
       ExpenseModel(
-        id: 3,
-        title: "Health",
-        icon: AppIcons.health,
-        expense: 500,
-        date: DateTime(2022, 1, 30),
-      ),
+          id: 3,
+          title: "Health",
+          icon: AppIcons.health,
+          expense: 500,
+          date: DateTime(2022, 1, 30),
+          category: "Expenses"),
     ],
     DateTime(2022, 1, 31): [
       ExpenseModel(
-        id: 1,
-        title: "Food",
-        icon: AppIcons.food,
-        expense: 500,
-        date: DateTime(2022, 1, 30),
-      ),
+          id: 1,
+          title: "Food",
+          icon: AppIcons.food,
+          expense: 500,
+          date: DateTime(2022, 1, 30),
+          category: "Expenses"),
       ExpenseModel(
-        id: 2,
-        title: "Entertainment",
-        icon: AppIcons.entertainment,
-        expense: 500,
-        date: DateTime(2022, 1, 30),
-      ),
+          id: 2,
+          title: "Entertainment",
+          icon: AppIcons.entertainment,
+          expense: 500,
+          date: DateTime(2022, 1, 30),
+          category: "Expenses"),
       ExpenseModel(
-        id: 3,
-        title: "Health",
-        icon: AppIcons.health,
-        expense: 500,
-        date: DateTime(2022, 1, 30),
-      ),
+          id: 3,
+          title: "Health",
+          icon: AppIcons.health,
+          expense: 500,
+          date: DateTime(2022, 1, 30),
+          category: "Expenses"),
     ],
     DateTime(2022, 2, 1): [
       ExpenseModel(
-        id: 1,
-        title: "Food",
-        icon: AppIcons.food,
-        expense: 500,
-        date: DateTime(2022, 1, 30),
-      ),
+          id: 3,
+          title: "Health",
+          icon: AppIcons.health,
+          expense: 500,
+          date: DateTime(2022, 1, 30),
+          category: "Expenses"),
       ExpenseModel(
-        id: 2,
-        title: "Entertainment",
-        icon: AppIcons.entertainment,
-        expense: 500,
-        date: DateTime(2022, 1, 30),
-      ),
+          id: 3,
+          title: "Health",
+          icon: AppIcons.health,
+          expense: 500,
+          date: DateTime(2022, 1, 30),
+          category: "Expenses"),
       ExpenseModel(
-        id: 3,
-        title: "Health",
-        icon: AppIcons.health,
-        expense: 500,
-        date: DateTime(2022, 1, 30),
-      ),
+          id: 3,
+          title: "Health",
+          icon: AppIcons.health,
+          expense: 500,
+          date: DateTime(2022, 1, 30),
+          category: "Expenses"),
     ],
     DateTime(2022, 2, 2): [
       ExpenseModel(
-        id: 1,
-        title: "Food",
-        icon: AppIcons.food,
-        expense: 500,
-        date: DateTime(2022, 1, 30),
-      ),
+          id: 3,
+          title: "Health",
+          icon: AppIcons.health,
+          expense: 500,
+          date: DateTime(2022, 1, 30),
+          category: "Expenses"),
       ExpenseModel(
-        id: 2,
-        title: "Entertainment",
-        icon: AppIcons.entertainment,
-        expense: 500,
-        date: DateTime(2022, 1, 30),
-      ),
+          id: 3,
+          title: "Health",
+          icon: AppIcons.health,
+          expense: 500,
+          date: DateTime(2022, 1, 30),
+          category: "Expenses"),
       ExpenseModel(
-        id: 3,
-        title: "Health",
-        icon: AppIcons.health,
-        expense: 500,
-        date: DateTime(2022, 1, 30),
-      ),
+          id: 3,
+          title: "Health",
+          icon: AppIcons.health,
+          expense: 500,
+          date: DateTime(2022, 1, 30),
+          category: "Expenses"),
     ]
   };
   static List<DateTime> dateList = [
@@ -143,6 +149,37 @@ class ExpenseModel {
     DateTime(2022, 2, 1),
     DateTime(2022, 2, 2)
   ];
+  static List<String> ExpenseCategoryList = [
+    "Baby",
+    "Beauty",
+    "Bills",
+    "Book",
+    "Car",
+    "Clothing",
+    "Education",
+    "Electronics",
+    "Entertainment",
+    "Food",
+    "Fruits",
+    "Gift",
+    "Health",
+    "Home",
+    "Maintenance",
+    "Office",
+    "Others",
+    "Pets",
+    "Shopping",
+    "Snacks",
+    "Social",
+    "Sports",
+    "Tax",
+    "Telephone",
+    "Transportation",
+    "Travel",
+    "Vegetables",
+    "Wine",
+  ];
+  static List<String> IncomeCategoryList = [];
 
   void addToExpenses(ExpenseModel expenseModel) {
     if (expenseMap[expenseModel.date] != null)

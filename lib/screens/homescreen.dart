@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:gradient_widgets/gradient_widgets.dart';
 import 'package:pocketify/models/expense_model.dart';
 import 'package:pocketify/utils/initialise_expenses_lists.dart';
+import 'package:pocketify/utils/routes.dart';
 import 'package:pocketify/utils/themes.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -16,9 +17,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late int currentIndex;
+  late int currentIndex = 0;
   late ScrollController _scrollController;
   late double _scrollControlOffset = 0.0;
+  var scaffoldKey = GlobalKey<ScaffoldState>();
 
   _scrollListener() {
     _scrollControlOffset = _scrollController.offset;
@@ -31,12 +33,16 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _scrollController = ScrollController();
     _scrollController.addListener(_scrollListener);
-    currentIndex = 0;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
+      drawer: Drawer(
+        backgroundColor: context.cardColor,
+      ),
+      onDrawerChanged: (isOpen) {},
       body: Container(
         color: context.cardColor,
         child: Stack(
@@ -73,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       topRight: Radius.circular(10)),
                                 ),
                                 color: Vx.white,
-                                elevation: 6,
+                                elevation: 3.5,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -126,19 +132,20 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         items: [
           BubbleBottomBarItem(
-              backgroundColor: Theme.of(context).cardColor,
-              icon: Icon(
-                Icons.menu,
-                color: Vx.gray400,
-              ),
-              activeIcon: Icon(
-                Icons.menu,
-                color: Theme.of(context).cardColor,
-              ),
-              title: Text(
-                "Home",
-                style: TextStyle(fontFamily: GoogleFonts.poppins().fontFamily),
-              )),
+            backgroundColor: Theme.of(context).cardColor,
+            icon: Icon(
+              Icons.menu,
+              color: Vx.gray400,
+            ),
+            activeIcon: Icon(
+              Icons.menu,
+              color: context.cardColor,
+            ),
+            title: Text(
+              "Home",
+              style: TextStyle(fontFamily: GoogleFonts.poppins().fontFamily),
+            ),
+          ),
           BubbleBottomBarItem(
               backgroundColor: Theme.of(context).cardColor,
               icon: Icon(
@@ -198,6 +205,9 @@ class _HomeScreenState extends State<HomeScreen> {
   changePage(int? index) {
     currentIndex = index!;
     setState(() {});
+    if (currentIndex == 0) scaffoldKey.currentState?.openDrawer();
+    if (currentIndex == 3)
+      Navigator.pushNamed(context, Routes.VIPSubscriptionScreen);
   }
 }
 
@@ -276,36 +286,6 @@ class TopCardHomeScreen extends StatelessWidget {
   }
 }
 
-class BottomCardHomeScreen extends StatelessWidget {
-  BottomCardHomeScreen({
-    Key? key,
-  }) : super(key: key) {}
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      physics: AlwaysScrollableScrollPhysics(),
-      child: Column(
-        children: [
-          ListView.builder(
-              shrinkWrap: true,
-              itemCount: ExpenseModel.dateList.length,
-              itemBuilder: (context, index) {
-                ExpenseModel.expenseMap[ExpenseModel.dateList[index]];
-                return DateWiseExpenseWidget(
-                    date: ExpenseModel.dateList[index]);
-              })
-        ],
-      ),
-    );
-  }
-
-  Future<void> getData() async {
-    print("refreshed");
-  }
-}
-
 class DateWiseExpenseWidget extends StatelessWidget {
   final DateTime date;
   const DateWiseExpenseWidget({Key? key, required this.date}) : super(key: key);
@@ -313,9 +293,13 @@ class DateWiseExpenseWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Vx.gray100,
-      child: Column(
-        children: InitialiseExpensesList.initialiseAndFetchExpenses(date),
+      color: Vx.white,
+      child: Card(
+        color: AppTheme.BASE_dullAccent,
+        child: Column(
+          children:
+              InitialiseExpensesList.initialiseAndFetchExpenses(date, context),
+        ),
       ),
     ).p12();
   }
@@ -371,27 +355,32 @@ class FadingAppBar extends StatelessWidget {
   }
 }
 
-/*
-*   DraggableScrollableSheet(
-              minChildSize: 0.75,
-              initialChildSize: 0.75,
-              maxChildSize: 1,
-              builder: (context, scrollController) => Material(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(15),
-                      topRight: Radius.circular(15)),
-                ),
-                color: Colors.white,
-                elevation: 8,
-                child: ListView.builder(
-                    itemCount: ExpenseModel.dateList.length,
-                    shrinkWrap: true,
-                    controller: _scrollController,
-                    itemBuilder: (context, index) {
-                      ExpenseModel.expenseMap[ExpenseModel.dateList[index]];
-                      return DateWiseExpenseWidget(
-                          date: ExpenseModel.dateList[index]);
-                    }),
-              ),
-            ),*/
+/*class BottomCardHomeScreen extends StatelessWidget {
+  BottomCardHomeScreen({
+    Key? key,
+  }) : super(key: key) {}
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      physics: AlwaysScrollableScrollPhysics(),
+      child: Column(
+        children: [
+          ListView.builder(
+              shrinkWrap: true,
+              itemCount: ExpenseModel.dateList.length,
+              itemBuilder: (context, index) {
+                ExpenseModel.expenseMap[ExpenseModel.dateList[index]];
+                return DateWiseExpenseWidget(
+                    date: ExpenseModel.dateList[index]);
+              })
+        ],
+      ),
+    );
+  }
+
+  Future<void> getData() async {
+    print("refreshed");
+  }
+}*/

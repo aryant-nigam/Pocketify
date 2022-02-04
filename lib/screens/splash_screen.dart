@@ -78,6 +78,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void moveToHomeScreen() async {
     await Future.delayed(Duration(milliseconds: 7200));
-    Navigator.pushReplacementNamed(context, Routes.CalculatorScreen);
+    Navigator.pushReplacementNamed(context, Routes.HomeScreenRoute);
   }
 }

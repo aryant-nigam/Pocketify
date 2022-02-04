@@ -13,14 +13,14 @@ class AppTheme {
   static ThemeData lightTheme(BuildContext context) {
     return ThemeData(
       fontFamily: GoogleFonts.poppins().fontFamily,
-      primaryTextTheme: GoogleFonts.bangersTextTheme(),
+      primaryTextTheme: GoogleFonts.poppinsTextTheme(),
       canvasColor: Vx.purple300,
       colorScheme: ColorScheme.fromSwatch().copyWith(
         secondary: Colors.black,
       ), //Your Accent Color
       cardColor: Color.fromRGBO(96, 9, 100, 1),
       appBarTheme: AppBarTheme(
-          backgroundColor: Colors.white,
+          backgroundColor: Color.fromRGBO(96, 9, 100, 1),
           titleTextStyle: TextStyle(
               color: Vx.black,
               fontFamily: GoogleFonts.poppins().fontFamily,
@@ -38,14 +38,14 @@ class AppTheme {
   static ThemeData darkTheme(BuildContext context) {
     return ThemeData(
       fontFamily: GoogleFonts.poppins().fontFamily,
-      primaryTextTheme: GoogleFonts.bangersTextTheme(),
+      primaryTextTheme: GoogleFonts.poppinsTextTheme(),
       canvasColor: Vx.gray900,
       colorScheme: ColorScheme.fromSwatch().copyWith(
         secondary: Colors.white,
       ), //Your Accent Color
       cardColor: Color.fromRGBO(96, 9, 100, 1),
       appBarTheme: AppBarTheme(
-          backgroundColor: Colors.white,
+          backgroundColor: Color.fromRGBO(96, 9, 100, 1),
           titleTextStyle: TextStyle(
               color: Vx.black,
               fontFamily: GoogleFonts.poppins().fontFamily,
