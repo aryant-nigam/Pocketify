@@ -6,6 +6,8 @@ import 'package:pocketify/utils/routes.dart';
 import 'package:pocketify/utils/themes.dart';
 import 'package:velocity_x/velocity_x.dart';
 
+import 'calculator_screen.dart';
+
 class EditScreen extends StatelessWidget {
   late ExpenseModel expense;
   EditScreen({Key? key, required this.expense}) : super(key: key);
@@ -92,10 +94,9 @@ class EditScreen extends StatelessWidget {
                       color: Colors.black,
                     ),
                     title: "Date".text.size(13).make(),
-                    trailing:
-                        "${DateFormat.yMd().add_jm().format(expense.date)}"
-                            .text
-                            .make(),
+                    trailing: "${DateFormat.yMMMd().format(expense.date)}"
+                        .text
+                        .make(),
                   ),
                   Divider(
                     color: Vx.gray400,
@@ -113,7 +114,9 @@ class EditScreen extends StatelessWidget {
                       focusColor: context.cardColor,
                       child: Text(
                         expense.remark != null
-                            ? expense.remark!.substring(0, 25) + "..."
+                            ? (expense.remark!.length < 25
+                                ? expense.remark!
+                                : expense.remark!.substring(0, 25) + "...")
                             : "",
                         style: TextStyle(fontSize: 10),
                       ),
@@ -168,7 +171,11 @@ class EditScreen extends StatelessWidget {
                   ],
                 ),
                 onPressed: () {
-                  Navigator.pushNamed(context, Routes.CalculatorScreen);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              CalculatorScreen(expenseModel: expense)));
                 },
               ),
             )

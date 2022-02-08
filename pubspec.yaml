@@ -36,7 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   velocity_x:
   lottie:
-  google_fonts: ^2.2.0
+  google_fonts: ^2.1.0
   animated_text_kit:
   animated_splash_screen: ^1.1.0
   bubble_bottom_bar: 
@@ -44,6 +44,7 @@ dependencies:
   gradient_widgets:
   intl: ^0.17.0
   math_expressions: ^2.3.0
+  syncfusion_flutter_charts:
 
 
 dev_dependencies:
@@ -74,6 +75,7 @@ flutter:
     - assets/images/
     - assets/files/
     - assets/icons/
+    - assets/avtars/
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

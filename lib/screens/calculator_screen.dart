@@ -1,13 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:math_expressions/math_expressions.dart';
 import 'package:pocketify/models/expense_model.dart';
 import 'package:pocketify/utils/themes.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class CalculatorScreen extends StatefulWidget {
-  CalculatorScreen({Key? key}) : super(key: key);
+  late ExpenseModel expenseModel;
+  CalculatorScreen({Key? key, required this.expenseModel}) : super(key: key);
 
   @override
   State<CalculatorScreen> createState() => _CalculatorScreenState();
@@ -15,6 +17,7 @@ class CalculatorScreen extends StatefulWidget {
 
 class _CalculatorScreenState extends State<CalculatorScreen>
     with TickerProviderStateMixin {
+  late ExpenseModel newEdittedExpense;
   ScrollController controller = ScrollController();
   double _initialSheetChildSize = 0.07;
   double _dragScrollSheetExtent = 0;
@@ -34,13 +37,16 @@ class _CalculatorScreenState extends State<CalculatorScreen>
   bool categoryVisible = false;
 
   //Edit utility variables
-  String categorySelected = "Food";
+  late String categorySelected;
 
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     _fabPosition = _initialSheetChildSize * context.screenHeight;
+    cost = widget.expenseModel.expense.toString();
+    categorySelected = widget.expenseModel.icon;
+    newEdittedExpense = widget.expenseModel;
   }
 
   @override
@@ -58,6 +64,7 @@ class _CalculatorScreenState extends State<CalculatorScreen>
             size: 30,
           ),
         ),
+        title: "Edit".text.color(Colors.white).size(18).make(),
         backgroundColor: context.cardColor,
       ),
       body: Container(
@@ -155,7 +162,7 @@ class _CalculatorScreenState extends State<CalculatorScreen>
                       }
                     },
                     child: Image.asset(
-                      "assets/icons/${categorySelected.toLowerCase()}.png",
+                      categorySelected,
                       height: 45,
                       width: 45,
                     ).pOnly(left: 10),
@@ -211,7 +218,15 @@ class _CalculatorScreenState extends State<CalculatorScreen>
                     ListTile(
                       tileColor: Colors.white,
                       leading: Icon(CupertinoIcons.calendar),
-                      title: "Date  30 Jan 2022".text.size(13).make(),
+                      title: Row(
+                        children: [
+                          "Date  ".text.size(13).bold.make(),
+                          "${DateFormat("E, dd MMM yyyy").format(widget.expenseModel.date)}"
+                              .text
+                              .size(13)
+                              .make(),
+                        ],
+                      ),
                       trailing: Icon(
                         Icons.arrow_forward_ios,
                         size: 15,
@@ -225,7 +240,15 @@ class _CalculatorScreenState extends State<CalculatorScreen>
                       leading: Icon(
                         CupertinoIcons.clock_solid,
                       ),
-                      title: "Time  20:24".text.size(13).make(),
+                      title: Row(
+                        children: [
+                          "Time  ".text.bold.size(13).make(),
+                          "${DateFormat.jm().format(widget.expenseModel.date)}"
+                              .text
+                              .size(13)
+                              .make(),
+                        ],
+                      ),
                       trailing: Icon(
                         Icons.arrow_forward_ios,
                         size: 15,
@@ -235,29 +258,38 @@ class _CalculatorScreenState extends State<CalculatorScreen>
                       height: 2,
                     ),
                     ListTile(
+                      contentPadding:
+                          EdgeInsets.only(left: 16, right: 0, top: 10),
                       tileColor: Colors.white,
                       leading: Icon(Icons.edit),
-                      title: Row(
+                      //title: "Remark  ".text.size(13).bold.make(),
+                      subtitle: TextField(
+                        cursorColor: context.cardColor,
+                        style: TextStyle(fontSize: 13),
+                        decoration: InputDecoration(
+                          label: "Remark".text.size(13).bold.make(),
+                          labelStyle: TextStyle(color: Colors.black),
+                          border: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          contentPadding: EdgeInsets.all(0),
+                          hintText: widget.expenseModel.remark != null
+                              ? (widget.expenseModel.remark!.length < 25
+                                  ? widget.expenseModel.remark!
+                                  : widget.expenseModel.remark!
+                                          .substring(0, 25) +
+                                      "...")
+                              : "",
+                        ),
+                      ).p0(),
+                      /*title: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          "Remark".text.size(13).make(),
-                          10.widthBox,
-                          /*TextField(
-                            decoration: InputDecoration(
-                              hintText: "Write a note",
-                              /*border: InputBorder.none,
-                              focusedBorder: InputBorder.none,
-                              enabledBorder: InputBorder.none,
-                              errorBorder: InputBorder.none,
-                              disabledBorder: InputBorder.none,*/
-                            ),
-                            style: TextStyle(
-                              color: Vx.gray400,
-                              fontSize: 13,
-                            ),
-                          )*/ //hastobe an edit text
+                          "Remark  ".text.size(13).bold.make(),
+                          //"${widget.expenseModel.remark ?? " "}".text.make(),
+
+                          //hastobe an edit text
                         ],
-                      ),
+                      ),*/
                     ),
                   ],
                 ).p4(),
@@ -329,6 +361,10 @@ class _CalculatorScreenState extends State<CalculatorScreen>
                   Expression exp = parser.parse(_equation);
                   double result =
                       exp.evaluate(EvaluationType.REAL, ContextModel());
+                  newEdittedExpense.expense = result;
+                  newEdittedExpense.icon = categorySelected;
+                  // if (!(newEdittedExpense == widget.expenseModel))
+                  //  newEdittedExpense.updateExpense();
                   cost = result.toStringAsFixed(2);
                   _equation = _equation.replaceAll('/', '÷');
                   _equation = _equation.replaceAll('*', 'x');
@@ -718,7 +754,8 @@ class _ExpenseCategoryListBuilderState
                 ),
                 onTap: () {
                   selectedCategory = index;
-                  widget.selectedExpenseCategoryCallback(category);
+                  widget.selectedExpenseCategoryCallback(
+                      "assets/Icons/${category.toLowerCase()}");
                   setState(() {});
                 },
               ),
@@ -768,7 +805,8 @@ class _IncomeCategoryListBuilderState extends State<IncomeCategoryListBuilder> {
                 ),
                 onTap: () {
                   selectedCategory = index;
-                  widget.selectedIncomeCategoryCallback(category);
+                  widget.selectedIncomeCategoryCallback(
+                      "assets/Icons/${category.toLowerCase()}");
                   setState(() {});
                 },
               ),

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gradient_widgets/gradient_widgets.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pocketify/models/expense_model.dart';
 import 'package:pocketify/utils/initialise_expenses_lists.dart';
 import 'package:pocketify/utils/routes.dart';
@@ -41,8 +42,175 @@ class _HomeScreenState extends State<HomeScreen> {
       key: scaffoldKey,
       drawer: Drawer(
         backgroundColor: context.cardColor,
+        child: Stack(
+          children: [
+            VxArc(
+              height: 170,
+              child: Container(
+                height: 210,
+                color: Vx.purple100,
+              ),
+            ),
+            Lottie.asset(
+              "assets/coins.json",
+            ),
+            Positioned(
+              right: 71,
+              top: 76,
+              child: SizedBox(
+                      height: 150,
+                      width: 150,
+                      child: Lottie.asset("assets/piggie.json").pOnly(left: 10))
+                  .p0(),
+            ),
+            Positioned(
+                top: 240,
+                child: Container(
+                  width: double.maxFinite,
+                  color: context.cardColor,
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Image.asset(
+                            "assets/icons/block_ads.png",
+                            height: 30,
+                            width: 30,
+                            color: Vx.purple100,
+                          ).pOnly(right: 15),
+                          "Remove all Ads".text.color(Vx.purple100).make(),
+                          Image.asset(
+                            "assets/icons/vip.png",
+                            height: 25,
+                            width: 25,
+                          ).pOnly(left: 20)
+                        ],
+                      ).pOnly(left: 20, bottom: 15),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.color_lens_outlined,
+                            color: Vx.purple100,
+                            size: 30,
+                          ).pOnly(right: 15),
+                          "Switch Colors".text.color(Vx.purple100).make(),
+                          Image.asset(
+                            "assets/icons/vip.png",
+                            height: 25,
+                            width: 25,
+                          ).pOnly(left: 30)
+                        ],
+                      ).pOnly(left: 20, bottom: 15),
+                      Row(
+                        children: [
+                          Image.asset(
+                            AppIcons.xls,
+                            height: 30,
+                            width: 30,
+                            color: Vx.purple100,
+                          ).pOnly(right: 15),
+                          "Excel Export".text.color(Vx.purple100).make(),
+                          Image.asset(
+                            "assets/icons/vip.png",
+                            height: 25,
+                            width: 25,
+                          ).pOnly(left: 43)
+                        ],
+                      ).pOnly(left: 20, bottom: 15),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.dark_mode_rounded,
+                            color: Vx.purple100,
+                            size: 30,
+                          ).pOnly(right: 15),
+                          "Dark Theme".text.color(Vx.purple100).make(),
+                          Image.asset(
+                            "assets/icons/vip.png",
+                            height: 25,
+                            width: 25,
+                          ).pOnly(left: 40)
+                        ],
+                      ).pOnly(left: 20, bottom: 15),
+                      Row(
+                        children: [
+                          Icon(
+                            CupertinoIcons.search,
+                            color: Vx.purple100,
+                            size: 30,
+                          ).pOnly(right: 15),
+                          "Search".text.color(Vx.purple100).make(),
+                          Image.asset(
+                            "assets/icons/vip.png",
+                            height: 25,
+                            width: 25,
+                          ).pOnly(left: 73)
+                        ],
+                      ).pOnly(left: 20, bottom: 15),
+                      10.heightBox,
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.backup,
+                            color: Vx.purple100,
+                            size: 30,
+                          ).pOnly(right: 15),
+                          "Backup/Restore".text.color(Vx.purple100).make()
+                        ],
+                      ).pOnly(left: 20, bottom: 15),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.update,
+                            color: Vx.purple100,
+                            size: 30,
+                          ).pOnly(right: 15),
+                          "Check Update".text.color(Vx.purple100).make()
+                        ],
+                      ).pOnly(left: 20, bottom: 15),
+                      Row(
+                        children: [
+                          Icon(
+                            CupertinoIcons.star_fill,
+                            color: Vx.purple100,
+                            size: 30,
+                          ).pOnly(right: 15),
+                          "Grade".text.color(Vx.purple100).make(),
+                        ],
+                      ).pOnly(left: 20, bottom: 15),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.share,
+                            color: Vx.purple100,
+                            size: 30,
+                          ).pOnly(right: 15),
+                          "Share".text.color(Vx.purple100).make()
+                        ],
+                      ).pOnly(left: 20, bottom: 15),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.settings,
+                            color: Vx.purple100,
+                            size: 30,
+                          ).pOnly(right: 15),
+                          "Settings".text.color(Vx.purple100).make()
+                        ],
+                      ).pOnly(left: 20, bottom: 15),
+                    ],
+                  ),
+                )),
+          ],
+        ),
       ),
-      onDrawerChanged: (isOpen) {},
+      drawerEnableOpenDragGesture: false,
+      onDrawerChanged: (isOpen) {
+        if (!isOpen)
+          setState(() {
+            currentIndex = 0;
+          });
+      },
       body: Container(
         color: context.cardColor,
         child: Stack(
@@ -134,11 +302,11 @@ class _HomeScreenState extends State<HomeScreen> {
           BubbleBottomBarItem(
             backgroundColor: Theme.of(context).cardColor,
             icon: Icon(
-              Icons.menu,
+              Icons.home,
               color: Vx.gray400,
             ),
             activeIcon: Icon(
-              Icons.menu,
+              Icons.home,
               color: context.cardColor,
             ),
             title: Text(
@@ -149,11 +317,11 @@ class _HomeScreenState extends State<HomeScreen> {
           BubbleBottomBarItem(
               backgroundColor: Theme.of(context).cardColor,
               icon: Icon(
-                Icons.dashboard_rounded,
+                Icons.menu,
                 color: Vx.gray300,
               ),
               activeIcon: Icon(
-                Icons.dashboard_rounded,
+                Icons.menu,
                 color: Theme.of(context).cardColor,
               ),
               title: Text(
@@ -205,7 +373,7 @@ class _HomeScreenState extends State<HomeScreen> {
   changePage(int? index) {
     currentIndex = index!;
     setState(() {});
-    if (currentIndex == 0) scaffoldKey.currentState?.openDrawer();
+    if (currentIndex == 1) scaffoldKey.currentState?.openDrawer();
     if (currentIndex == 2)
       Navigator.pushNamed(context, Routes.ExpenseVisualizationScreen);
     if (currentIndex == 3)
@@ -289,7 +457,7 @@ class TopCardHomeScreen extends StatelessWidget {
 }
 
 class DateWiseExpenseWidget extends StatelessWidget {
-  final DateTime date;
+  final String date;
   const DateWiseExpenseWidget({Key? key, required this.date}) : super(key: key);
 
   @override

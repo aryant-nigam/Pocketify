@@ -29,9 +29,9 @@ class MyApp extends StatelessWidget {
         Routes.HomeScreenRoute: (context) {
           return HomeScreen();
         },
-        Routes.CalculatorScreen: (context) {
+        /*Routes.CalculatorScreen: (context) {
           return CalculatorScreen();
-        },
+        },*/
         Routes.EditScreen: (context) {
           return EditScreen(
             expense: ExpenseModel(
