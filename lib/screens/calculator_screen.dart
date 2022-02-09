@@ -6,12 +6,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:math_expressions/math_expressions.dart';
 import 'package:pocketify/models/expense_model.dart';
+import 'package:pocketify/utils/ExpenseNotifier.dart';
 import 'package:pocketify/utils/themes.dart';
+import 'package:provider/provider.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class CalculatorScreen extends StatefulWidget {
-  late ExpenseModel expenseModel;
-  CalculatorScreen({Key? key, required this.expenseModel}) : super(key: key);
+  late int id;
+  CalculatorScreen({Key? key, required this.id}) : super(key: key);
 
   @override
   State<CalculatorScreen> createState() => _CalculatorScreenState();
@@ -21,6 +23,7 @@ class _CalculatorScreenState extends State<CalculatorScreen>
     with TickerProviderStateMixin {
   TextEditingController textController = TextEditingController();
   late ExpenseModel newEdittedExpense;
+  late ExpenseModel expenseModel;
   ScrollController controller = ScrollController();
   double _initialSheetChildSize = 0.07;
   double _dragScrollSheetExtent = 0;
@@ -36,35 +39,39 @@ class _CalculatorScreenState extends State<CalculatorScreen>
   bool _isEditing = false;
   late BuildContext draggableSheetContext;
   String cost = "0";
-
   bool categoryVisible = false;
+
+  //Edit utility variables
   late DateTime _date;
   late TimeOfDay _time;
   late String? _remark;
-  //Edit utility variables
   late String _iconSelected;
   late String _categorySelected;
   late String _title;
 
+  late ExpenseNotifier expenseNotifier;
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
+    expenseModel = ExpenseNotifier.getObjectWith(widget.id)!;
     _fabPosition = _initialSheetChildSize * context.screenHeight;
-    cost = widget.expenseModel.expense.toString();
-    _iconSelected = widget.expenseModel.icon;
-    newEdittedExpense = widget.expenseModel;
-    _date = widget.expenseModel.date;
+    cost = expenseModel.expense.toString();
+
+    _iconSelected = expenseModel.icon;
+    newEdittedExpense = expenseModel;
+    _date = expenseModel.date;
     _time = TimeOfDay(
-        hour: widget.expenseModel.date.hour,
-        minute: widget.expenseModel.date.minute);
-    _remark = widget.expenseModel.remark;
-    _categorySelected = widget.expenseModel.category;
-    _title = widget.expenseModel.title;
+        hour: expenseModel.date.hour, minute: expenseModel.date.minute);
+    _remark = expenseModel.remark;
+    _categorySelected = expenseModel.category;
+    _title = expenseModel.title;
   }
 
   @override
   Widget build(BuildContext context) {
+    expenseNotifier = Provider.of<ExpenseNotifier>(context);
+
     TabController tabController = TabController(length: 2, vsync: this);
     return Scaffold(
       appBar: AppBar(
@@ -358,7 +365,7 @@ class _CalculatorScreenState extends State<CalculatorScreen>
                           border: InputBorder.none,
                           focusedBorder: InputBorder.none,
                           contentPadding: EdgeInsets.all(0),
-                          hintText: widget.expenseModel.remark != null
+                          hintText: expenseModel.remark != null
                               ? (_remark!.length < 25
                                   ? _remark!
                                   : _remark!.substring(0, 25) + "...")
@@ -448,6 +455,7 @@ class _CalculatorScreenState extends State<CalculatorScreen>
                   newEdittedExpense.expense = result;
                   newEdittedExpense.icon = _iconSelected;
                   saveExpenseChanges();
+                  print("expense updated");
                   //  newEdittedExpense.updateExpense();
                   cost = result.toStringAsFixed(2);
                   _equation = _equation.replaceAll('/', '÷');
@@ -486,8 +494,9 @@ class _CalculatorScreenState extends State<CalculatorScreen>
     newEdittedExpense.remark = _remark;
     newEdittedExpense.category = _categorySelected;
     newEdittedExpense.title = _title;
-    if (!(newEdittedExpense == widget.expenseModel))
-      ExpenseModel.updateExpense(newEdittedExpense, widget.expenseModel);
+    if (!(newEdittedExpense == expenseModel))
+      expenseNotifier.updateExpenses(newEdittedExpense);
+    print(ExpenseNotifier.getObjectWith(widget.id)!.expense);
   }
 }
 

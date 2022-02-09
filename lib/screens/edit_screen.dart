@@ -2,18 +2,42 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pocketify/models/expense_model.dart';
+import 'package:pocketify/utils/ExpenseNotifier.dart';
 import 'package:pocketify/utils/routes.dart';
 import 'package:pocketify/utils/themes.dart';
+import 'package:provider/provider.dart';
 import 'package:velocity_x/velocity_x.dart';
 
+import '../utils/app_icons.dart';
 import 'calculator_screen.dart';
 
-class EditScreen extends StatelessWidget {
+class EditScreen extends StatefulWidget {
+  late int id;
+  EditScreen({Key? key, required this.id}) : super(key: key);
+  @override
+  State<EditScreen> createState() => _EditScreenState();
+}
+
+class _EditScreenState extends State<EditScreen> {
   late ExpenseModel expense;
-  EditScreen({Key? key, required this.expense}) : super(key: key);
+
+  @override
+  void initState() {
+    print("Aryant ${ExpenseNotifier().expenseList.length}");
+    expense = ExpenseNotifier.getObjectWith(widget.id)!;
+    print("Edit screen:${expense.expense}");
+  }
+
+  @override
+  void didDependenciesChange() {
+    // expense = ExpenseNotifier.getObjectWith(widget.id)!;
+  }
 
   @override
   Widget build(BuildContext context) {
+    ExpenseNotifier expenseNotifier = Provider.of<ExpenseNotifier>(context);
+    print(expenseNotifier.getObjectWith2(widget.id)!);
+    expense = expenseNotifier.getObjectWith2(widget.id)!;
     return Scaffold(
       appBar: AppBar(
         leading: GestureDetector(
@@ -94,9 +118,10 @@ class EditScreen extends StatelessWidget {
                       color: Colors.black,
                     ),
                     title: "Date".text.size(13).make(),
-                    trailing: "${DateFormat.yMMMd().format(expense.date)}"
-                        .text
-                        .make(),
+                    trailing:
+                        "${myDateFormatter(expenseNotifier.getObjectWith2(widget.id)!.date)}"
+                            .text
+                            .make(),
                   ),
                   Divider(
                     color: Vx.gray400,
@@ -174,8 +199,9 @@ class EditScreen extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              CalculatorScreen(expenseModel: expense)));
+                          builder: (context) => CalculatorScreen(
+                                id: widget.id,
+                              )));
                 },
               ),
             )

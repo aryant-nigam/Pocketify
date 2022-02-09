@@ -7,12 +7,17 @@ import 'package:pocketify/screens/expense_visualization_screen.dart';
 import 'package:pocketify/screens/homescreen.dart';
 import 'package:pocketify/screens/splash_screen.dart';
 import 'package:pocketify/screens/vip_subscription_screen.dart';
+import 'package:pocketify/utils/ExpenseNotifier.dart';
 import 'package:pocketify/utils/routes.dart';
 import 'package:pocketify/utils/themes.dart';
+import 'package:provider/provider.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+void main() => runApp(
+      ChangeNotifierProvider<ExpenseNotifier>(
+        create: (_) => ExpenseNotifier(),
+        child: const MyApp(),
+      ),
+    );
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -32,7 +37,7 @@ class MyApp extends StatelessWidget {
         /*Routes.CalculatorScreen: (context) {
           return CalculatorScreen();
         },*/
-        Routes.EditScreen: (context) {
+        /* Routes.EditScreen: (context) {
           return EditScreen(
             expense: ExpenseModel(
                 id: 3,
@@ -43,13 +48,13 @@ class MyApp extends StatelessWidget {
                 category: "Expenses",
                 remark: "At Ajay Kumar Rai's clinic"),
           );
-        },
+        },*/
         Routes.VIPSubscriptionScreen: (context) {
           return VIPSubscriptionScreen();
         },
-        Routes.ExpenseVisualizationScreen: (context) {
+        /*Routes.ExpenseVisualizationScreen: (context) {
           return ExpenseVisualizationScreen();
-        }
+        }*/
       },
     );
   }

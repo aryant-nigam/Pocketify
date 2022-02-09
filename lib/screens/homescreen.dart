@@ -5,10 +5,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:gradient_widgets/gradient_widgets.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pocketify/models/expense_model.dart';
+import 'package:pocketify/utils/ExpenseNotifier.dart';
 import 'package:pocketify/utils/initialise_expenses_lists.dart';
 import 'package:pocketify/utils/routes.dart';
 import 'package:pocketify/utils/themes.dart';
+import 'package:provider/provider.dart';
 import 'package:velocity_x/velocity_x.dart';
+
+import '../utils/app_icons.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -38,6 +42,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ExpenseNotifier expenseNotifier = Provider.of<ExpenseNotifier>(context);
+    expenseNotifier.initList();
     return Scaffold(
       key: scaffoldKey,
       drawer: Drawer(
@@ -270,12 +276,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             ListView.builder(
                                 controller: scrollcontroller,
-                                itemCount: ExpenseModel.dateList.length,
+                                itemCount: expenseNotifier.dateList.length,
                                 itemBuilder: (context, int index) {
-                                  ExpenseModel
-                                      .expenseMap[ExpenseModel.dateList[index]];
                                   return DateWiseExpenseWidget(
-                                      date: ExpenseModel.dateList[index]);
+                                      date: expenseNotifier.dateList[index]);
                                 }).pOnly(top: 30),
                           ],
                         ));
@@ -462,13 +466,16 @@ class DateWiseExpenseWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ExpenseNotifier expenseNotifier = Provider.of<ExpenseNotifier>(context);
+    InitialiseExpensesList initialiseExpensesList =
+        InitialiseExpensesList(expenseList: expenseNotifier.Filter(date));
+
     return Container(
       color: Vx.white,
       child: Card(
         color: AppTheme.BASE_dullAccent,
         child: Column(
-          children:
-              InitialiseExpensesList.initialiseAndFetchExpenses(date, context),
+          children: initialiseExpensesList.initialiseAndFetchExpenses(context),
         ),
       ),
     ).p12();

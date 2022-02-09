@@ -5,6 +5,8 @@ import 'package:pocketify/utils/themes.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:lottie/lottie.dart';
 
+import '../utils/app_icons.dart';
+
 class VIPSubscriptionScreen extends StatelessWidget {
   final Key _snackbarKey = UniqueKey();
   VIPSubscriptionScreen({Key? key}) : super(key: key);

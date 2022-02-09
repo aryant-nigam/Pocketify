@@ -4,27 +4,29 @@ import 'package:intl/intl.dart';
 import 'package:pocketify/models/expense_model.dart';
 import 'package:pocketify/screens/calculator_screen.dart';
 import 'package:pocketify/screens/edit_screen.dart';
+import 'package:pocketify/utils/ExpenseNotifier.dart';
 import 'package:pocketify/utils/routes.dart';
 import 'package:pocketify/utils/themes.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class InitialiseExpensesList {
-  static List<Widget> myExpenses = [];
-  static double total = 0.0;
-  static int count = 0;
+  List<ExpenseModel> expenseList = [];
+  List<Widget> myExpensesTiles = [];
+  double total = 0.0;
+  int count = 0;
 
-  static List<Widget> initialiseAndFetchExpenses(
-      String date, BuildContext context) {
-    //Adding expenses of particular date
-    myExpenses = [];
-    for (var expenseOfTheDate in ExpenseModel.expenseMap[date]!) {
+  InitialiseExpensesList({required this.expenseList});
+
+  List<Widget> initialiseAndFetchExpenses(BuildContext context) {
+    //myExpenses = [];
+    for (var expenseOfTheDate in expenseList) {
       total += expenseOfTheDate.expense;
-      myExpenses.add(GestureDetector(
+      myExpensesTiles.add(GestureDetector(
         onTap: () {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => EditScreen(expense: expenseOfTheDate)));
+                  builder: (context) => EditScreen(id: expenseOfTheDate.id)));
         },
         child: ListTile(
           tileColor: Colors.white,
@@ -43,7 +45,7 @@ class InitialiseExpensesList {
       ));
     }
     //Adding header for the expense records
-    myExpenses.insert(
+    myExpensesTiles.insert(
       0,
       Container(
         color: Vx.gray100,
@@ -52,7 +54,7 @@ class InitialiseExpensesList {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              "${date}",
+              "${myDateFormatter(expenseList[0].date)}",
               style: TextStyle(fontSize: 10),
             ),
             Text("Expense: ${total}", style: TextStyle(fontSize: 10))
@@ -62,6 +64,6 @@ class InitialiseExpensesList {
     );
     total = 0;
     count++;
-    return myExpenses;
+    return myExpensesTiles;
   }
 }
