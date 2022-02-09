@@ -40,6 +40,8 @@ class AppTheme {
       fontFamily: GoogleFonts.poppins().fontFamily,
       primaryTextTheme: GoogleFonts.poppinsTextTheme(),
       canvasColor: Vx.gray900,
+      primaryColor: Color.fromRGBO(96, 9, 100, 1),
+
       colorScheme: ColorScheme.fromSwatch().copyWith(
         secondary: Colors.white,
       ), //Your Accent Color

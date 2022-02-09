@@ -44,7 +44,7 @@ class ExpenseModel {
   String? remark;
 
   static String myDateFormatter(DateTime date) {
-    return DateFormat("dd-MM-yyyy").format(date);
+    return DateFormat.yMMMd().format(date);
   }
 
   ExpenseModel(
@@ -57,7 +57,7 @@ class ExpenseModel {
       this.remark});
 
   static Map<String, List<ExpenseModel>> expenseMap = {
-    "30-1-2022": [
+    "Jan 30, 2022": [
       ExpenseModel(
           id: 1,
           title: "Food",
@@ -81,7 +81,7 @@ class ExpenseModel {
           date: DateTime(2022, 1, 30),
           category: "Expenses"),
     ],
-    "31-1-2022": [
+    "Jan 31, 2022": [
       ExpenseModel(
           id: 1,
           title: "Food",
@@ -104,7 +104,7 @@ class ExpenseModel {
           date: DateTime(2022, 1, 31),
           category: "Expenses"),
     ],
-    "1-2-2022": [
+    "Feb 1, 2022": [
       ExpenseModel(
           id: 3,
           title: "Health",
@@ -127,7 +127,7 @@ class ExpenseModel {
           date: DateTime(2022, 2, 1),
           category: "Expenses"),
     ],
-    "2-2-2022": [
+    "Feb 2, 2022": [
       ExpenseModel(
           id: 3,
           title: "Health",
@@ -152,11 +152,11 @@ class ExpenseModel {
     ]
   };
 
-  static List<DateTime> dateList = [
-    DateTime(2022, 1, 30),
-    DateTime(2022, 1, 31),
-    DateTime(2022, 2, 1),
-    DateTime(2022, 2, 2)
+  static List<String> dateList = [
+    "Jan 30, 2022",
+    "Jan 31, 2022",
+    "Feb 1, 2022",
+    "Feb 2, 2022"
   ];
   static List<String> ExpenseCategoryList = [
     "Baby",

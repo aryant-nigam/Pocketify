@@ -21,7 +21,7 @@ class _ExpenseVisualizationScreenState
   TooltipBehavior _tooltipBehavior = TooltipBehavior(enable: true);
   @override
   void initState() {
-    for (DateTime date in ExpenseModel.dateList) {
+    for (String date in ExpenseModel.dateList) {
       expensesList.addAll(ExpenseModel.expenseMap[date]!);
     }
     print("Aryant : ${expensesList.length}");

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,6 +19,7 @@ class CalculatorScreen extends StatefulWidget {
 
 class _CalculatorScreenState extends State<CalculatorScreen>
     with TickerProviderStateMixin {
+  TextEditingController textController = TextEditingController();
   late ExpenseModel newEdittedExpense;
   ScrollController controller = ScrollController();
   double _initialSheetChildSize = 0.07;
@@ -35,9 +38,13 @@ class _CalculatorScreenState extends State<CalculatorScreen>
   String cost = "0";
 
   bool categoryVisible = false;
-
+  late DateTime _date;
+  late TimeOfDay _time;
+  late String? _remark;
   //Edit utility variables
-  late String categorySelected;
+  late String _iconSelected;
+  late String _categorySelected;
+  late String _title;
 
   @override
   void didChangeDependencies() {
@@ -45,8 +52,15 @@ class _CalculatorScreenState extends State<CalculatorScreen>
     super.didChangeDependencies();
     _fabPosition = _initialSheetChildSize * context.screenHeight;
     cost = widget.expenseModel.expense.toString();
-    categorySelected = widget.expenseModel.icon;
+    _iconSelected = widget.expenseModel.icon;
     newEdittedExpense = widget.expenseModel;
+    _date = widget.expenseModel.date;
+    _time = TimeOfDay(
+        hour: widget.expenseModel.date.hour,
+        minute: widget.expenseModel.date.minute);
+    _remark = widget.expenseModel.remark;
+    _categorySelected = widget.expenseModel.category;
+    _title = widget.expenseModel.title;
   }
 
   @override
@@ -56,6 +70,7 @@ class _CalculatorScreenState extends State<CalculatorScreen>
       appBar: AppBar(
         leading: GestureDetector(
           onTap: () {
+            saveExpenseChanges();
             Navigator.pop(context);
           },
           child: Icon(
@@ -135,20 +150,30 @@ class _CalculatorScreenState extends State<CalculatorScreen>
                                         controller: tabController,
                                         children: [
                                           ExpenseCategoryListBuilder(
-                                            selectedExpenseCategoryCallback:
-                                                (String
-                                                    expenseCategorySelected) {
-                                              this.categorySelected =
+                                            selectedExpenseCategoryCallback: (
+                                              String expenseCategorySelected,
+                                            ) {
+                                              this._iconSelected =
                                                   expenseCategorySelected;
+                                              _categorySelected = "Expenses";
+                                              _title = expenseCategorySelected
+                                                  .split("/")[2];
+                                              _title.replaceFirst(_title[0],
+                                                  _title[0].toUpperCase());
                                               setState(() {});
                                             },
                                           ),
                                           IncomeCategoryListBuilder(
                                             selectedIncomeCategoryCallback:
                                                 (String
-                                                    IncomeCategorySelected) {
-                                              this.categorySelected =
-                                                  IncomeCategorySelected;
+                                                    incomeCategorySelected) {
+                                              this._iconSelected =
+                                                  incomeCategorySelected;
+                                              _categorySelected = "Income";
+                                              _title = incomeCategorySelected
+                                                  .split("/")[2];
+                                              _title.replaceFirst(_title[0],
+                                                  _title[0].toUpperCase());
                                               setState(() {});
                                             },
                                           )
@@ -162,7 +187,7 @@ class _CalculatorScreenState extends State<CalculatorScreen>
                       }
                     },
                     child: Image.asset(
-                      categorySelected,
+                      _iconSelected,
                       height: 45,
                       width: 45,
                     ).pOnly(left: 10),
@@ -221,15 +246,44 @@ class _CalculatorScreenState extends State<CalculatorScreen>
                       title: Row(
                         children: [
                           "Date  ".text.size(13).bold.make(),
-                          "${DateFormat("E, dd MMM yyyy").format(widget.expenseModel.date)}"
-                              .text
-                              .size(13)
-                              .make(),
+                          Text(
+                            _date != null
+                                ? DateFormat("E, dd MMM yyyy").format(_date)
+                                : DateFormat("E, dd MMM yyyy").format(_date),
+                            style: TextStyle(fontSize: 13),
+                          )
                         ],
                       ),
-                      trailing: Icon(
-                        Icons.arrow_forward_ios,
-                        size: 15,
+                      trailing: InkWell(
+                        onTap: () async {
+                          showDatePicker(
+                                  builder: (context, child) => Theme(
+                                        data: ThemeData().copyWith(
+                                            colorScheme: ColorScheme.dark(
+                                                primary: AppTheme.FAB_dark,
+                                                onPrimary: Colors.white,
+                                                surface: Vx.purple100,
+                                                onSurface: Colors.black),
+                                            dialogBackgroundColor:
+                                                Colors.white),
+                                        child: child!,
+                                      ),
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime.now(),
+                                  lastDate:
+                                      DateTime.now().add(Duration(days: 365)))
+                              .then((value) {
+                            if (value != null)
+                              setState(() {
+                                _date = value;
+                              });
+                          });
+                        },
+                        child: Icon(
+                          Icons.arrow_forward_ios,
+                          size: 15,
+                        ),
                       ),
                     ),
                     Divider(
@@ -243,15 +297,43 @@ class _CalculatorScreenState extends State<CalculatorScreen>
                       title: Row(
                         children: [
                           "Time  ".text.bold.size(13).make(),
-                          "${DateFormat.jm().format(widget.expenseModel.date)}"
-                              .text
-                              .size(13)
-                              .make(),
+                          Text(
+                            _time != null
+                                ? DateFormat.jm().format(DateTime(
+                                    1996, 1, 1, _time.hour, _time.minute))
+                                : DateFormat.jm().format(DateTime(
+                                    1996, 1, 1, _time.hour, _time.minute)),
+                            style: TextStyle(fontSize: 13),
+                          ),
                         ],
                       ),
-                      trailing: Icon(
-                        Icons.arrow_forward_ios,
-                        size: 15,
+                      trailing: InkWell(
+                        onTap: () async {
+                          showTimePicker(
+                                  builder: (context, child) => Theme(
+                                        data: ThemeData().copyWith(
+                                            colorScheme: ColorScheme.dark(
+                                                primary: AppTheme.FAB_dark,
+                                                onPrimary: Colors.white,
+                                                surface: Vx.purple100,
+                                                onSurface: Colors.black),
+                                            dialogBackgroundColor:
+                                                Colors.white),
+                                        child: child!,
+                                      ),
+                                  context: context,
+                                  initialTime: TimeOfDay.now())
+                              .then((value) {
+                            if (value != null)
+                              setState(() {
+                                _time = value;
+                              });
+                          });
+                        },
+                        child: Icon(
+                          Icons.arrow_forward_ios,
+                          size: 15,
+                        ),
                       ),
                     ),
                     Divider(
@@ -264,6 +346,10 @@ class _CalculatorScreenState extends State<CalculatorScreen>
                       leading: Icon(Icons.edit),
                       //title: "Remark  ".text.size(13).bold.make(),
                       subtitle: TextField(
+                        controller: textController,
+                        onChanged: (edittedRemark) {
+                          _remark = edittedRemark;
+                        },
                         cursorColor: context.cardColor,
                         style: TextStyle(fontSize: 13),
                         decoration: InputDecoration(
@@ -273,11 +359,9 @@ class _CalculatorScreenState extends State<CalculatorScreen>
                           focusedBorder: InputBorder.none,
                           contentPadding: EdgeInsets.all(0),
                           hintText: widget.expenseModel.remark != null
-                              ? (widget.expenseModel.remark!.length < 25
-                                  ? widget.expenseModel.remark!
-                                  : widget.expenseModel.remark!
-                                          .substring(0, 25) +
-                                      "...")
+                              ? (_remark!.length < 25
+                                  ? _remark!
+                                  : _remark!.substring(0, 25) + "...")
                               : "",
                         ),
                       ).p0(),
@@ -362,8 +446,8 @@ class _CalculatorScreenState extends State<CalculatorScreen>
                   double result =
                       exp.evaluate(EvaluationType.REAL, ContextModel());
                   newEdittedExpense.expense = result;
-                  newEdittedExpense.icon = categorySelected;
-                  // if (!(newEdittedExpense == widget.expenseModel))
+                  newEdittedExpense.icon = _iconSelected;
+                  saveExpenseChanges();
                   //  newEdittedExpense.updateExpense();
                   cost = result.toStringAsFixed(2);
                   _equation = _equation.replaceAll('/', '÷');
@@ -392,6 +476,18 @@ class _CalculatorScreenState extends State<CalculatorScreen>
         ),
       ),
     );
+  }
+
+  void saveExpenseChanges() {
+    newEdittedExpense.date =
+        DateTime(_date.year, _date.month, _date.day, _time.hour, _time.minute);
+    newEdittedExpense.icon = _iconSelected;
+    newEdittedExpense.expense = double.parse(cost);
+    newEdittedExpense.remark = _remark;
+    newEdittedExpense.category = _categorySelected;
+    newEdittedExpense.title = _title;
+    if (!(newEdittedExpense == widget.expenseModel))
+      ExpenseModel.updateExpense(newEdittedExpense, widget.expenseModel);
   }
 }
 

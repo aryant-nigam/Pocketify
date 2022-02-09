@@ -524,33 +524,3 @@ class FadingAppBar extends StatelessWidget {
     );
   }
 }
-
-/*class BottomCardHomeScreen extends StatelessWidget {
-  BottomCardHomeScreen({
-    Key? key,
-  }) : super(key: key) {}
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      physics: AlwaysScrollableScrollPhysics(),
-      child: Column(
-        children: [
-          ListView.builder(
-              shrinkWrap: true,
-              itemCount: ExpenseModel.dateList.length,
-              itemBuilder: (context, index) {
-                ExpenseModel.expenseMap[ExpenseModel.dateList[index]];
-                return DateWiseExpenseWidget(
-                    date: ExpenseModel.dateList[index]);
-              })
-        ],
-      ),
-    );
-  }
-
-  Future<void> getData() async {
-    print("refreshed");
-  }
-}*/
