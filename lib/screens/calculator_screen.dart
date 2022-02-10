@@ -837,7 +837,7 @@ class _ExpenseCategoryListBuilderState
             children: [
               ListTile(
                 leading: Image.asset(
-                  "assets/icons/${category.toLowerCase()}.png",
+                  "assets/icons/${category.toLowerCase().trim()}.png",
                   height: 25,
                   width: 25,
                 ),
@@ -852,7 +852,7 @@ class _ExpenseCategoryListBuilderState
                 onTap: () {
                   selectedCategory = index;
                   widget.selectedExpenseCategoryCallback(
-                      "assets/Icons/${category.toLowerCase()}");
+                      "assets/icons/${category.toLowerCase()}.png");
                   setState(() {});
                 },
               ),
