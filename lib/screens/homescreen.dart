@@ -29,7 +29,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   _scrollListener() {
     _scrollControlOffset = _scrollController.offset;
-
     setState(() {});
   }
 
@@ -42,335 +41,346 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ExpenseNotifier expenseNotifier = Provider.of<ExpenseNotifier>(context);
-    expenseNotifier.initList();
-    return Scaffold(
-      key: scaffoldKey,
-      drawer: Drawer(
-        backgroundColor: context.cardColor,
-        child: Stack(
-          children: [
-            VxArc(
-              height: 170,
-              child: Container(
-                height: 210,
-                color: Vx.purple100,
-              ),
-            ),
-            Lottie.asset(
-              "assets/coins.json",
-            ),
-            Positioned(
-              right: 71,
-              top: 76,
-              child: SizedBox(
-                      height: 150,
-                      width: 150,
-                      child: Lottie.asset("assets/piggie.json").pOnly(left: 10))
-                  .p0(),
-            ),
-            Positioned(
-                top: 240,
-                child: Container(
-                  width: double.maxFinite,
-                  color: context.cardColor,
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Image.asset(
-                            "assets/icons/block_ads.png",
-                            height: 30,
-                            width: 30,
-                            color: Vx.purple100,
-                          ).pOnly(right: 15),
-                          "Remove all Ads".text.color(Vx.purple100).make(),
-                          Image.asset(
-                            "assets/icons/vip.png",
-                            height: 25,
-                            width: 25,
-                          ).pOnly(left: 20)
-                        ],
-                      ).pOnly(left: 20, bottom: 15),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.color_lens_outlined,
-                            color: Vx.purple100,
-                            size: 30,
-                          ).pOnly(right: 15),
-                          "Switch Colors".text.color(Vx.purple100).make(),
-                          Image.asset(
-                            "assets/icons/vip.png",
-                            height: 25,
-                            width: 25,
-                          ).pOnly(left: 30)
-                        ],
-                      ).pOnly(left: 20, bottom: 15),
-                      Row(
-                        children: [
-                          Image.asset(
-                            AppIcons.xls,
-                            height: 30,
-                            width: 30,
-                            color: Vx.purple100,
-                          ).pOnly(right: 15),
-                          "Excel Export".text.color(Vx.purple100).make(),
-                          Image.asset(
-                            "assets/icons/vip.png",
-                            height: 25,
-                            width: 25,
-                          ).pOnly(left: 43)
-                        ],
-                      ).pOnly(left: 20, bottom: 15),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.dark_mode_rounded,
-                            color: Vx.purple100,
-                            size: 30,
-                          ).pOnly(right: 15),
-                          "Dark Theme".text.color(Vx.purple100).make(),
-                          Image.asset(
-                            "assets/icons/vip.png",
-                            height: 25,
-                            width: 25,
-                          ).pOnly(left: 40)
-                        ],
-                      ).pOnly(left: 20, bottom: 15),
-                      Row(
-                        children: [
-                          Icon(
-                            CupertinoIcons.search,
-                            color: Vx.purple100,
-                            size: 30,
-                          ).pOnly(right: 15),
-                          "Search".text.color(Vx.purple100).make(),
-                          Image.asset(
-                            "assets/icons/vip.png",
-                            height: 25,
-                            width: 25,
-                          ).pOnly(left: 73)
-                        ],
-                      ).pOnly(left: 20, bottom: 15),
-                      10.heightBox,
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.backup,
-                            color: Vx.purple100,
-                            size: 30,
-                          ).pOnly(right: 15),
-                          "Backup/Restore".text.color(Vx.purple100).make()
-                        ],
-                      ).pOnly(left: 20, bottom: 15),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.update,
-                            color: Vx.purple100,
-                            size: 30,
-                          ).pOnly(right: 15),
-                          "Check Update".text.color(Vx.purple100).make()
-                        ],
-                      ).pOnly(left: 20, bottom: 15),
-                      Row(
-                        children: [
-                          Icon(
-                            CupertinoIcons.star_fill,
-                            color: Vx.purple100,
-                            size: 30,
-                          ).pOnly(right: 15),
-                          "Grade".text.color(Vx.purple100).make(),
-                        ],
-                      ).pOnly(left: 20, bottom: 15),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.share,
-                            color: Vx.purple100,
-                            size: 30,
-                          ).pOnly(right: 15),
-                          "Share".text.color(Vx.purple100).make()
-                        ],
-                      ).pOnly(left: 20, bottom: 15),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.settings,
-                            color: Vx.purple100,
-                            size: 30,
-                          ).pOnly(right: 15),
-                          "Settings".text.color(Vx.purple100).make()
-                        ],
-                      ).pOnly(left: 20, bottom: 15),
-                    ],
+    //ExpenseNotifier expenseNotifier = Provider.of<ExpenseNotifier>(context);
+    //expenseNotifier.initList();
+    return Consumer<ExpenseNotifier>(
+      builder: (context, expenseNotifier, child) {
+        return Scaffold(
+          key: scaffoldKey,
+          drawer: Drawer(
+            backgroundColor: context.cardColor,
+            child: Stack(
+              children: [
+                VxArc(
+                  height: 170,
+                  child: Container(
+                    height: 210,
+                    color: Vx.purple100,
                   ),
-                )),
-          ],
-        ),
-      ),
-      drawerEnableOpenDragGesture: false,
-      onDrawerChanged: (isOpen) {
-        if (!isOpen)
-          setState(() {
-            currentIndex = 0;
-          });
-      },
-      body: Container(
-        color: context.cardColor,
-        child: Stack(
-          children: [
-            TopCardHomeScreen(),
-            NotificationListener<DraggableScrollableNotification>(
-              onNotification: (notification) {
-                _scrollControlOffset =
-                    (notification.extent - notification.minExtent) /
-                        (notification.maxExtent - notification.minExtent);
-                setState(() {});
-                return true;
-              },
-              child: DraggableScrollableSheet(
-                  initialChildSize: .75,
-                  minChildSize: .75,
-                  builder: (BuildContext context,
-                      ScrollController scrollcontroller) {
-                    return Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(15),
-                              topRight: Radius.circular(15)),
-                        ),
-                        child: Stack(
-                          children: [
-                            Container(
-                              height: 70,
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(10),
-                                      topRight: Radius.circular(10)),
-                                ),
-                                color: Vx.white,
-                                elevation: 3.5,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    "Budget Setting"
-                                        .text
-                                        .xl
-                                        .fontWeight(FontWeight.bold)
-                                        .make()
-                                        .p8(),
-                                    GradientProgressIndicator(
-                                      gradient: LinearGradient(colors: [
-                                        AppTheme.progressBase,
-                                        AppTheme.progressMarker
-                                      ]),
-                                      value: 0.55,
-                                    ).p4(),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            ListView.builder(
-                                controller: scrollcontroller,
-                                itemCount: expenseNotifier.dateList.length,
-                                itemBuilder: (context, int index) {
-                                  return DateWiseExpenseWidget(
-                                      date: expenseNotifier.dateList[index]);
-                                }).pOnly(top: 30),
-                          ],
-                        ));
-                  }),
-            ),
-            FadingAppBar(scrollOffset: _scrollControlOffset)
-          ],
-        ),
-      ),
-      bottomNavigationBar: BubbleBottomBar(
-        backgroundColor: Vx.white,
-        inkColor: Vx.white,
-        hasNotch: false,
-        hasInk: true,
-        fabLocation: BubbleBottomBarFabLocation.end,
-        currentIndex: currentIndex,
-        onTap: changePage,
-        opacity: 0.2,
-        elevation: 8,
-        tilesPadding: EdgeInsets.symmetric(
-          vertical: 8.0,
-        ),
-        items: [
-          BubbleBottomBarItem(
-            backgroundColor: Theme.of(context).cardColor,
-            icon: Icon(
-              Icons.home,
-              color: Vx.gray400,
-            ),
-            activeIcon: Icon(
-              Icons.home,
-              color: context.cardColor,
-            ),
-            title: Text(
-              "Home",
-              style: TextStyle(fontFamily: GoogleFonts.poppins().fontFamily),
+                ),
+                Lottie.asset(
+                  "assets/coins.json",
+                ),
+                Positioned(
+                  right: 71,
+                  top: 76,
+                  child: SizedBox(
+                          height: 150,
+                          width: 150,
+                          child: Lottie.asset("assets/piggie.json")
+                              .pOnly(left: 10))
+                      .p0(),
+                ),
+                Positioned(
+                    top: 240,
+                    child: Container(
+                      width: double.maxFinite,
+                      color: context.cardColor,
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Image.asset(
+                                "assets/icons/block_ads.png",
+                                height: 30,
+                                width: 30,
+                                color: Vx.purple100,
+                              ).pOnly(right: 15),
+                              "Remove all Ads".text.color(Vx.purple100).make(),
+                              Image.asset(
+                                "assets/icons/vip.png",
+                                height: 25,
+                                width: 25,
+                              ).pOnly(left: 20)
+                            ],
+                          ).pOnly(left: 20, bottom: 15),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.color_lens_outlined,
+                                color: Vx.purple100,
+                                size: 30,
+                              ).pOnly(right: 15),
+                              "Switch Colors".text.color(Vx.purple100).make(),
+                              Image.asset(
+                                "assets/icons/vip.png",
+                                height: 25,
+                                width: 25,
+                              ).pOnly(left: 30)
+                            ],
+                          ).pOnly(left: 20, bottom: 15),
+                          Row(
+                            children: [
+                              Image.asset(
+                                AppIcons.xls,
+                                height: 30,
+                                width: 30,
+                                color: Vx.purple100,
+                              ).pOnly(right: 15),
+                              "Excel Export".text.color(Vx.purple100).make(),
+                              Image.asset(
+                                "assets/icons/vip.png",
+                                height: 25,
+                                width: 25,
+                              ).pOnly(left: 43)
+                            ],
+                          ).pOnly(left: 20, bottom: 15),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.dark_mode_rounded,
+                                color: Vx.purple100,
+                                size: 30,
+                              ).pOnly(right: 15),
+                              "Dark Theme".text.color(Vx.purple100).make(),
+                              Image.asset(
+                                "assets/icons/vip.png",
+                                height: 25,
+                                width: 25,
+                              ).pOnly(left: 40)
+                            ],
+                          ).pOnly(left: 20, bottom: 15),
+                          Row(
+                            children: [
+                              Icon(
+                                CupertinoIcons.search,
+                                color: Vx.purple100,
+                                size: 30,
+                              ).pOnly(right: 15),
+                              "Search".text.color(Vx.purple100).make(),
+                              Image.asset(
+                                "assets/icons/vip.png",
+                                height: 25,
+                                width: 25,
+                              ).pOnly(left: 73)
+                            ],
+                          ).pOnly(left: 20, bottom: 15),
+                          10.heightBox,
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.backup,
+                                color: Vx.purple100,
+                                size: 30,
+                              ).pOnly(right: 15),
+                              "Backup/Restore".text.color(Vx.purple100).make()
+                            ],
+                          ).pOnly(left: 20, bottom: 15),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.update,
+                                color: Vx.purple100,
+                                size: 30,
+                              ).pOnly(right: 15),
+                              "Check Update".text.color(Vx.purple100).make()
+                            ],
+                          ).pOnly(left: 20, bottom: 15),
+                          Row(
+                            children: [
+                              Icon(
+                                CupertinoIcons.star_fill,
+                                color: Vx.purple100,
+                                size: 30,
+                              ).pOnly(right: 15),
+                              "Grade".text.color(Vx.purple100).make(),
+                            ],
+                          ).pOnly(left: 20, bottom: 15),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.share,
+                                color: Vx.purple100,
+                                size: 30,
+                              ).pOnly(right: 15),
+                              "Share".text.color(Vx.purple100).make()
+                            ],
+                          ).pOnly(left: 20, bottom: 15),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.settings,
+                                color: Vx.purple100,
+                                size: 30,
+                              ).pOnly(right: 15),
+                              "Settings".text.color(Vx.purple100).make()
+                            ],
+                          ).pOnly(left: 20, bottom: 15),
+                        ],
+                      ),
+                    )),
+              ],
             ),
           ),
-          BubbleBottomBarItem(
-              backgroundColor: Theme.of(context).cardColor,
-              icon: Icon(
-                Icons.menu,
-                color: Vx.gray300,
+          drawerEnableOpenDragGesture: false,
+          onDrawerChanged: (isOpen) {
+            if (!isOpen)
+              setState(() {
+                currentIndex = 0;
+              });
+          },
+          body: Container(
+            color: context.cardColor,
+            child: Stack(
+              children: [
+                TopCardHomeScreen(),
+                NotificationListener<DraggableScrollableNotification>(
+                  onNotification: (notification) {
+                    _scrollControlOffset =
+                        (notification.extent - notification.minExtent) /
+                            (notification.maxExtent - notification.minExtent);
+                    setState(() {});
+                    return true;
+                  },
+                  child: DraggableScrollableSheet(
+                      initialChildSize: .75,
+                      minChildSize: .75,
+                      builder: (BuildContext context,
+                          ScrollController scrollcontroller) {
+                        return Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(15),
+                                  topRight: Radius.circular(15)),
+                            ),
+                            child: Stack(
+                              children: [
+                                Container(
+                                  height: 70,
+                                  child: Card(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(10),
+                                          topRight: Radius.circular(10)),
+                                    ),
+                                    color: Vx.white,
+                                    elevation: 3.5,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        "Budget Setting"
+                                            .text
+                                            .xl
+                                            .fontWeight(FontWeight.bold)
+                                            .make()
+                                            .p8(),
+                                        GradientProgressIndicator(
+                                          gradient: LinearGradient(colors: [
+                                            AppTheme.progressBase,
+                                            AppTheme.progressMarker
+                                          ]),
+                                          value: 0.55,
+                                        ).p4(),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                ListView.builder(
+                                    controller: scrollcontroller,
+                                    itemCount: expenseNotifier.dateList.length,
+                                    itemBuilder: (context, int index) {
+                                      return DateWiseExpenseWidget(
+                                          date:
+                                              expenseNotifier.dateList[index]);
+                                    }).pOnly(top: 30),
+                              ],
+                            ));
+                      }),
+                ),
+                FadingAppBar(scrollOffset: _scrollControlOffset)
+              ],
+            ),
+          ),
+          bottomNavigationBar: BubbleBottomBar(
+            backgroundColor: Vx.white,
+            inkColor: Vx.white,
+            hasNotch: false,
+            hasInk: true,
+            fabLocation: BubbleBottomBarFabLocation.end,
+            currentIndex: currentIndex,
+            onTap: changePage,
+            opacity: 0.2,
+            elevation: 8,
+            tilesPadding: EdgeInsets.symmetric(
+              vertical: 8.0,
+            ),
+            items: [
+              BubbleBottomBarItem(
+                backgroundColor: Theme.of(context).cardColor,
+                icon: Icon(
+                  Icons.home,
+                  color: Vx.gray400,
+                ),
+                activeIcon: Icon(
+                  Icons.home,
+                  color: context.cardColor,
+                ),
+                title: Text(
+                  "Home",
+                  style:
+                      TextStyle(fontFamily: GoogleFonts.poppins().fontFamily),
+                ),
               ),
-              activeIcon: Icon(
-                Icons.menu,
-                color: Theme.of(context).cardColor,
-              ),
-              title: Text(
-                "Category",
-                style: TextStyle(fontFamily: GoogleFonts.poppins().fontFamily),
-              )),
-          BubbleBottomBarItem(
-              backgroundColor: Theme.of(context).cardColor,
-              icon: Icon(
-                CupertinoIcons.chart_pie_fill,
-                color: Vx.gray300,
-              ),
-              activeIcon: Icon(
-                CupertinoIcons.chart_pie_fill,
-                color: Theme.of(context).cardColor,
-              ),
-              title: Text(
-                "Visualize",
-                style: TextStyle(fontFamily: GoogleFonts.poppins().fontFamily),
-              )),
-          BubbleBottomBarItem(
-              backgroundColor: Theme.of(context).cardColor,
-              icon: Icon(
-                CupertinoIcons.star_circle,
-                color: Vx.gray300,
-              ),
-              activeIcon: Icon(
-                CupertinoIcons.star_circle,
-                color: Theme.of(context).cardColor,
-              ),
-              title: Text(
-                "VIP",
-                style: TextStyle(fontFamily: GoogleFonts.poppins().fontFamily),
-              ))
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: AppTheme.FAB_light,
-        child: Icon(
-          CupertinoIcons.add,
-          size: 35,
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+              BubbleBottomBarItem(
+                  backgroundColor: Theme.of(context).cardColor,
+                  icon: Icon(
+                    Icons.menu,
+                    color: Vx.gray300,
+                  ),
+                  activeIcon: Icon(
+                    Icons.menu,
+                    color: Theme.of(context).cardColor,
+                  ),
+                  title: Text(
+                    "Category",
+                    style:
+                        TextStyle(fontFamily: GoogleFonts.poppins().fontFamily),
+                  )),
+              BubbleBottomBarItem(
+                  backgroundColor: Theme.of(context).cardColor,
+                  icon: Icon(
+                    CupertinoIcons.chart_pie_fill,
+                    color: Vx.gray300,
+                  ),
+                  activeIcon: Icon(
+                    CupertinoIcons.chart_pie_fill,
+                    color: Theme.of(context).cardColor,
+                  ),
+                  title: Text(
+                    "Visualize",
+                    style:
+                        TextStyle(fontFamily: GoogleFonts.poppins().fontFamily),
+                  )),
+              BubbleBottomBarItem(
+                  backgroundColor: Theme.of(context).cardColor,
+                  icon: Icon(
+                    CupertinoIcons.star_circle,
+                    color: Vx.gray300,
+                  ),
+                  activeIcon: Icon(
+                    CupertinoIcons.star_circle,
+                    color: Theme.of(context).cardColor,
+                  ),
+                  title: Text(
+                    "VIP",
+                    style:
+                        TextStyle(fontFamily: GoogleFonts.poppins().fontFamily),
+                  ))
+            ],
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {},
+            backgroundColor: AppTheme.FAB_light,
+            child: Icon(
+              CupertinoIcons.add,
+              size: 35,
+            ),
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+        );
+      },
     );
   }
 
