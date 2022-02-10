@@ -8,12 +8,20 @@ import 'package:velocity_x/velocity_x.dart';
 
 import 'calculator_screen.dart';
 
-class EditScreen extends StatelessWidget {
+class EditScreen extends StatefulWidget {
   late ExpenseModel expense;
   EditScreen({Key? key, required this.expense}) : super(key: key);
 
   @override
+  State<EditScreen> createState() => _EditScreenState();
+}
+
+class _EditScreenState extends State<EditScreen> {
+  @override
   Widget build(BuildContext context) {
+    setState(() {
+
+    });
     return Scaffold(
       appBar: AppBar(
         leading: GestureDetector(
@@ -63,12 +71,12 @@ class EditScreen extends StatelessWidget {
                   ListTile(
                     tileColor: Colors.white,
                     leading: Image.asset(
-                      expense.icon,
+                      widget.expense.icon,
                       height: 30,
                       width: 30,
                     ),
-                    title: "${expense.title}".text.size(13).make(),
-                    trailing: "${expense.expense}".text.bold.size(17).make(),
+                    title: "${widget.expense.title}".text.size(13).make(),
+                    trailing: "${widget.expense.expense}".text.bold.size(17).make(),
                   ),
                   Divider(
                     color: Vx.gray400,
@@ -81,7 +89,7 @@ class EditScreen extends StatelessWidget {
                       color: Colors.black,
                     ),
                     title: "Category".text.size(13).make(),
-                    trailing: "${expense.category}".text.size(13).make(),
+                    trailing: "${widget.expense.category}".text.size(13).make(),
                   ),
                   Divider(
                     color: Vx.gray400,
@@ -94,7 +102,7 @@ class EditScreen extends StatelessWidget {
                       color: Colors.black,
                     ),
                     title: "Date".text.size(13).make(),
-                    trailing: "${DateFormat.yMMMd().format(expense.date)}"
+                    trailing: "${DateFormat.yMMMd().format(widget.expense.date)}"
                         .text
                         .make(),
                   ),
@@ -113,24 +121,24 @@ class EditScreen extends StatelessWidget {
                       splashColor: context.cardColor,
                       focusColor: context.cardColor,
                       child: Text(
-                        expense.remark != null
-                            ? (expense.remark!.length < 25
-                                ? expense.remark!
-                                : expense.remark!.substring(0, 25) + "...")
+                        widget.expense.remark != null
+                            ? (widget.expense.remark!.length < 25
+                                ? widget.expense.remark!
+                                : widget.expense.remark!.substring(0, 25) + "...")
                             : "",
                         style: TextStyle(fontSize: 10),
                       ),
                       onTap: () {
-                        if (expense.remark != null &&
-                            expense.remark!.trim() != "")
+                        if (widget.expense.remark != null &&
+                            widget.expense.remark!.trim() != "")
                           showDialog(
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
                                   title: "Remark".text.size(15).bold.make(),
                                   content: Text(
-                                    expense.remark != null
-                                        ? expense.remark!
+                                    widget.expense.remark != null
+                                        ? widget.expense.remark!
                                         : "",
                                     style: TextStyle(fontSize: 13),
                                   ),
@@ -175,7 +183,7 @@ class EditScreen extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              CalculatorScreen(expenseModel: expense)));
+                              CalculatorScreen(expenseModel: widget.expense)));
                 },
               ),
             )

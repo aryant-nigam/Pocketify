@@ -448,6 +448,7 @@ class _CalculatorScreenState extends State<CalculatorScreen>
                   newEdittedExpense.expense = result;
                   newEdittedExpense.icon = _iconSelected;
                   saveExpenseChanges();
+
                   //  newEdittedExpense.updateExpense();
                   cost = result.toStringAsFixed(2);
                   _equation = _equation.replaceAll('/', '÷');
