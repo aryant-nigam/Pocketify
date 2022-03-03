@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import '../utils/app_icons.dart';
@@ -6,7 +7,7 @@ String myDateFormatter(DateTime date) {
   return DateFormat.yMMMd().format(date);
 }
 
-class ExpenseModel with ChangeNotifier {
+class ExpenseModel {
   int id;
   String title;
   String icon;
@@ -31,85 +32,85 @@ class ExpenseModel with ChangeNotifier {
         icon: AppIcons.food,
         expense: 500,
         date: DateTime(2022, 1, 30),
-        category: "Expenses",
+        category: "Income",
         remark: "At Ajay Rai's clinic"),
     ExpenseModel(
         id: 2,
         title: "Entertainment",
         icon: AppIcons.entertainment,
-        expense: 500,
+        expense: -500,
         date: DateTime(2022, 1, 30),
         category: "Expenses"),
     ExpenseModel(
         id: 3,
         title: "Health",
         icon: AppIcons.health,
-        expense: 500,
+        expense: -500,
         date: DateTime(2022, 1, 30),
         category: "Expenses"),
     ExpenseModel(
-        id: 1,
+        id: 4,
         title: "Food",
         icon: AppIcons.food,
-        expense: 500,
+        expense: -500,
         date: DateTime(2022, 1, 31),
         category: "Expenses"),
     ExpenseModel(
-        id: 2,
+        id: 5,
         title: "Entertainment",
         icon: AppIcons.entertainment,
-        expense: 500,
+        expense: -500,
         date: DateTime(2022, 1, 31),
         category: "Expenses"),
     ExpenseModel(
-        id: 3,
+        id: 6,
         title: "Health",
         icon: AppIcons.health,
-        expense: 500,
+        expense: -500,
         date: DateTime(2022, 1, 31),
         category: "Expenses"),
     ExpenseModel(
-        id: 3,
+        id: 7,
         title: "Health",
         icon: AppIcons.health,
         expense: 500,
         date: DateTime(2022, 2, 1),
-        category: "Expenses"),
+        category: "Income"),
     ExpenseModel(
-        id: 3,
+        id: 8,
         title: "Health",
         icon: AppIcons.health,
         expense: 500,
         date: DateTime(2022, 2, 1),
-        category: "Expenses"),
+        category: "Income"),
     ExpenseModel(
-        id: 3,
+        id: 9,
         title: "Health",
         icon: AppIcons.health,
         expense: 500,
         date: DateTime(2022, 2, 1),
+        category: "Income"),
+    ExpenseModel(
+        id: 10,
+        title: "Health",
+        icon: AppIcons.health,
+        expense: -500,
+        date: DateTime(2022, 2, 2),
         category: "Expenses"),
     ExpenseModel(
-        id: 3,
+        id: 11,
         title: "Health",
         icon: AppIcons.health,
         expense: 500,
         date: DateTime(2022, 2, 2),
-        category: "Expenses"),
+        category: "Income"),
     ExpenseModel(
-        id: 3,
+        id: 12,
         title: "Health",
         icon: AppIcons.health,
         expense: 500,
         date: DateTime(2022, 2, 2),
-        category: "Expenses"),
-    ExpenseModel(
-        id: 3,
-        title: "Health",
-        icon: AppIcons.health,
-        expense: 500,
-        date: DateTime(2022, 2, 2),
-        category: "Expenses"),
+        category: "Income"),
   ];
 
   static List<String> dateList = [
@@ -150,76 +151,38 @@ class ExpenseModel with ChangeNotifier {
     "Wine",
   ];
 
-  /*@override
-  bool operator ==(Object other) {
-    if (other is ExpenseModel &&
-        this.id == other.id &&
-        this.icon == other.icon &&
-        this.expense == other.expense &&
-        this.remark == other.remark &&
-        this.date == other.date &&
-        this.category == other.category &&
-        this.title == other.title)
-      return true;
-    else
-      return false;
+  static ExpenseModel getDefaultExpenseModel() {
+    DateTime date = DateTime.now();
+    return ExpenseModel(
+        id: -1,
+        title: "Food",
+        icon: AppIcons.food,
+        expense: 0,
+        date: DateTime(date.year, date.month, date.day, TimeOfDay.now().hour,
+            TimeOfDay.now().minute),
+        category: "Expense");
   }
 
-  static List<String> IncomeCategoryList = [];
-
-  static void addToExpenses(ExpenseModel expenseModel) {
-    if (expenseMap[myDateFormatter(expenseModel.date)] != null)
-      expenseMap[myDateFormatter(expenseModel.date)]!.add(expenseModel);
-    else {
-      expenseMap.addAll({
-        myDateFormatter(expenseModel.date): [expenseModel]
-      });
-    }
+  Map<String, Object?> toMap() {
+    return {
+      "expenseId": this.id,
+      "expenseTitle": this.title,
+      "expenseIcon": this.icon,
+      "expenseExpense": this.expense,
+      "expenseDate": this.date.toString(),
+      "expenseCategory": this.category,
+      "expenseRemark": this.remark
+    };
   }
 
-  /*void removeFromExpenses(int id) {
-    for (int i = 0; i < expenseMap[dateList[i]]!.length; i++)
-      for (int j = 0; j < expenseMap[dateList[i]]!.length; j++) {
-        if (expenseMap[dateList[i]]![j].id == id)
-          expenseMap[dateList[i]]!.removeAt(j);
-        if (expenseMap[dateList[i]]!.isEmpty) dateList.removeAt(i);
-      }
-  }*/
-
-  static void updateExpense(ExpenseModel newExpense, ExpenseModel oldExpense) {
-    if (myDateFormatter(newExpense.date) != myDateFormatter(oldExpense.date))
-      findAndUpdate(expenseMap[myDateFormatter(newExpense.date)], newExpense);
-    else
-      findAndReplace(
-          expenseMap[myDateFormatter(newExpense.date)], newExpense, oldExpense);
+  factory ExpenseModel.fromMap(Map<String, dynamic> map) {
+    return ExpenseModel(
+        id: map["expenseId"],
+        title: map["expenseTitle"],
+        icon: map["expenseIcon"],
+        expense: map["expenseExpense"],
+        date: DateTime.parse(map["expenseDate"]),
+        category: map["expenseCategory"],
+        remark: map["expenseRemark"]);
   }
-
-  static void findAndUpdate(
-      List<ExpenseModel>? expenseListOfDate, ExpenseModel newExpense) {
-    if (expenseListOfDate == null) {
-      expenseMap.addAll({
-        myDateFormatter(newExpense.date): [newExpense]
-      });
-    } else if (expenseListOfDate.length == 0) {
-      expenseMap[myDateFormatter(newExpense.date)]!.add(newExpense);
-    } else {
-      for (int i = 0; i < expenseListOfDate.length; i++)
-        if (expenseListOfDate[i] == newExpense)
-          expenseMap[myDateFormatter(newExpense.date)]![i] = newExpense;
-    }
-  }
-
-  static void findAndReplace(List<ExpenseModel>? expenseListOfDate,
-      ExpenseModel newExpense, ExpenseModel oldExpense) {
-    addToExpenses(newExpense);
-    removeExpense(oldExpense);
-  }
-
-  static void removeExpense(ExpenseModel oldExpense) {
-    for (int i = 0;
-        i < expenseMap[myDateFormatter(oldExpense.date)]!.length;
-        i++)
-      if (expenseMap[myDateFormatter(oldExpense.date)]![i] == oldExpense)
-        expenseMap[myDateFormatter(oldExpense.date)]!.removeAt(i);
-  }*/
 }

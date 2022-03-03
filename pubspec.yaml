@@ -46,6 +46,9 @@ dependencies:
   math_expressions: ^2.3.0
   syncfusion_flutter_charts:
   provider: ^6.0.2
+  fluttertoast: ^8.0.8
+  sqflite:
+  path_provider:
 
 
 dev_dependencies:

@@ -12,15 +12,20 @@ import 'package:velocity_x/velocity_x.dart';
 class InitialiseExpensesList {
   List<ExpenseModel> expenseList = [];
   List<Widget> myExpensesTiles = [];
-  double total = 0.0;
+  double totalExpense = 0.0;
+  double totalIncome = 0.0;
   int count = 0;
-
   InitialiseExpensesList({required this.expenseList});
 
   List<Widget> initialiseAndFetchExpenses(BuildContext context) {
     //myExpenses = [];
+    //print("in builder ${expenseList.length}");
     for (var expenseOfTheDate in expenseList) {
-      total += expenseOfTheDate.expense;
+      if (expenseOfTheDate.category == "Income")
+        totalIncome += expenseOfTheDate.expense;
+      else
+        totalExpense += expenseOfTheDate.expense;
+
       myExpensesTiles.add(GestureDetector(
         onTap: () {
           Navigator.push(
@@ -54,15 +59,29 @@ class InitialiseExpensesList {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              "${myDateFormatter(expenseList[0].date)}",
+              "date",
               style: TextStyle(fontSize: 10),
-            ),
-            Text("Expense: ${total}", style: TextStyle(fontSize: 10))
+            ), //myDateFormatter(expenseList[0].date)
+            Row(
+              children: [
+                Visibility(
+                        visible: totalExpense == 0.0 ? false : true,
+                        child: Text("Expense: ${totalExpense}",
+                            style: TextStyle(fontSize: 10)))
+                    .pOnly(right: 10),
+                Visibility(
+                    visible: totalIncome == 0.0 ? false : true,
+                    child: Text("Income: ${totalIncome}",
+                        style:
+                            TextStyle(fontSize: 10, color: context.cardColor)))
+              ],
+            )
           ],
         ).p4(),
       ),
     );
-    total = 0;
+    totalExpense = 0;
+    totalIncome = 0;
     count++;
     return myExpensesTiles;
   }

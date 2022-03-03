@@ -12,12 +12,18 @@ import 'package:pocketify/utils/routes.dart';
 import 'package:pocketify/utils/themes.dart';
 import 'package:provider/provider.dart';
 
-void main() => runApp(
-      ChangeNotifierProvider<ExpenseNotifier>(
-        create: (_) => ExpenseNotifier(),
-        child: const MyApp(),
-      ),
-    );
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  ExpenseNotifier.initDatabase();
+  runApp(
+    ChangeNotifierProvider<ExpenseNotifier>(
+      create: (_) {
+        return ExpenseNotifier();
+      },
+      child: const MyApp(),
+    ),
+  );
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -52,9 +58,9 @@ class MyApp extends StatelessWidget {
         Routes.VIPSubscriptionScreen: (context) {
           return VIPSubscriptionScreen();
         },
-        /*Routes.ExpenseVisualizationScreen: (context) {
+        Routes.ExpenseVisualizationScreen: (context) {
           return ExpenseVisualizationScreen();
-        }*/
+        }
       },
     );
   }

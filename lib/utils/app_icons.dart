@@ -30,4 +30,5 @@ class AppIcons {
   static const String block_ads = "assets/icons/block_ads.png";
   static const String xls = "assets/icons/xls.png";
   static const String vip = "assets/icons/vip.png";
+  static const String save_changes = "assets/icons/save_changes.png";
 }
