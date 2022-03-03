@@ -49,6 +49,7 @@ dependencies:
   fluttertoast: ^8.0.8
   sqflite:
   path_provider:
+  permission_handler: ^9.2.0
 
 
 dev_dependencies:

@@ -18,8 +18,6 @@ class InitialiseExpensesList {
   InitialiseExpensesList({required this.expenseList});
 
   List<Widget> initialiseAndFetchExpenses(BuildContext context) {
-    //myExpenses = [];
-    //print("in builder ${expenseList.length}");
     for (var expenseOfTheDate in expenseList) {
       if (expenseOfTheDate.category == "Income")
         totalIncome += expenseOfTheDate.expense;
@@ -59,18 +57,18 @@ class InitialiseExpensesList {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              "date",
+              "Date : ${myDateFormatter(expenseList[0].date)}",
               style: TextStyle(fontSize: 10),
             ), //myDateFormatter(expenseList[0].date)
             Row(
               children: [
                 Visibility(
-                        visible: totalExpense == 0.0 ? false : true,
+                        visible: totalExpense == 0.0 ? true : true,
                         child: Text("Expense: ${totalExpense}",
                             style: TextStyle(fontSize: 10)))
                     .pOnly(right: 10),
                 Visibility(
-                    visible: totalIncome == 0.0 ? false : true,
+                    visible: totalIncome == 0.0 ? true : true,
                     child: Text("Income: ${totalIncome}",
                         style:
                             TextStyle(fontSize: 10, color: context.cardColor)))
@@ -80,6 +78,7 @@ class InitialiseExpensesList {
         ).p4(),
       ),
     );
+
     totalExpense = 0;
     totalIncome = 0;
     count++;

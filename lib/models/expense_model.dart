@@ -25,101 +25,6 @@ class ExpenseModel {
       required this.category,
       this.remark});
 
-  static List<ExpenseModel> expenseList = [
-    ExpenseModel(
-        id: 1,
-        title: "Food",
-        icon: AppIcons.food,
-        expense: 500,
-        date: DateTime(2022, 1, 30),
-        category: "Income",
-        remark: "At Ajay Rai's clinic"),
-    ExpenseModel(
-        id: 2,
-        title: "Entertainment",
-        icon: AppIcons.entertainment,
-        expense: -500,
-        date: DateTime(2022, 1, 30),
-        category: "Expenses"),
-    ExpenseModel(
-        id: 3,
-        title: "Health",
-        icon: AppIcons.health,
-        expense: -500,
-        date: DateTime(2022, 1, 30),
-        category: "Expenses"),
-    ExpenseModel(
-        id: 4,
-        title: "Food",
-        icon: AppIcons.food,
-        expense: -500,
-        date: DateTime(2022, 1, 31),
-        category: "Expenses"),
-    ExpenseModel(
-        id: 5,
-        title: "Entertainment",
-        icon: AppIcons.entertainment,
-        expense: -500,
-        date: DateTime(2022, 1, 31),
-        category: "Expenses"),
-    ExpenseModel(
-        id: 6,
-        title: "Health",
-        icon: AppIcons.health,
-        expense: -500,
-        date: DateTime(2022, 1, 31),
-        category: "Expenses"),
-    ExpenseModel(
-        id: 7,
-        title: "Health",
-        icon: AppIcons.health,
-        expense: 500,
-        date: DateTime(2022, 2, 1),
-        category: "Income"),
-    ExpenseModel(
-        id: 8,
-        title: "Health",
-        icon: AppIcons.health,
-        expense: 500,
-        date: DateTime(2022, 2, 1),
-        category: "Income"),
-    ExpenseModel(
-        id: 9,
-        title: "Health",
-        icon: AppIcons.health,
-        expense: 500,
-        date: DateTime(2022, 2, 1),
-        category: "Income"),
-    ExpenseModel(
-        id: 10,
-        title: "Health",
-        icon: AppIcons.health,
-        expense: -500,
-        date: DateTime(2022, 2, 2),
-        category: "Expenses"),
-    ExpenseModel(
-        id: 11,
-        title: "Health",
-        icon: AppIcons.health,
-        expense: 500,
-        date: DateTime(2022, 2, 2),
-        category: "Income"),
-    ExpenseModel(
-        id: 12,
-        title: "Health",
-        icon: AppIcons.health,
-        expense: 500,
-        date: DateTime(2022, 2, 2),
-        category: "Income"),
-  ];
-
-  static List<String> dateList = [
-    "Jan 30, 2022",
-    "Jan 31, 2022",
-    "Feb 1, 2022",
-    "Feb 2, 2022"
-  ];
-
   static List<String> ExpenseCategoryList = [
     "Baby",
     "Beauty",
@@ -180,7 +85,7 @@ class ExpenseModel {
         id: map["expenseId"],
         title: map["expenseTitle"],
         icon: map["expenseIcon"],
-        expense: map["expenseExpense"],
+        expense: map["expenseExpense"].toDouble(),
         date: DateTime.parse(map["expenseDate"]),
         category: map["expenseCategory"],
         remark: map["expenseRemark"]);

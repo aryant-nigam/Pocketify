@@ -66,7 +66,7 @@ class _ExpenseVisualizationScreenState
                     tooltipBehavior: _tooltipBehavior,
                     series: <CircularSeries>[
                       PieSeries<ExpenseModel, String>(
-                          dataSource: expenseNotifier.expenseList,
+                          dataSource: ExpenseNotifier.expenseList,
                           xValueMapper: (ExpenseModel expense, _) =>
                               "${DateFormat("dd-MM-yyyy").format(expense.date)}",
                           yValueMapper: (ExpenseModel expense, _) =>

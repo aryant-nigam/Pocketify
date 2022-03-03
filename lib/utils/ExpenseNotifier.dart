@@ -6,7 +6,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pocketify/utils/app_icons.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 import '../models/expense_model.dart';
+import 'ExpenseNotifier.dart';
 
 class ExpenseNotifier extends ChangeNotifier {
   //SQflite operations
@@ -28,49 +30,37 @@ class ExpenseNotifier extends ChangeNotifier {
   }
 
   initList() async {
-    print("Aryant done 0");
-
+    var db = await getDatabase();
     //await database;
-    print("Aryant done 1");
     dateList = [];
     var listOfMapOfExpenses = await _getExpenseMapList();
-    print("Aryant done 2");
     expenseList = List.generate(listOfMapOfExpenses.length,
         (index) => ExpenseModel.fromMap(listOfMapOfExpenses[index]));
-    print("Aryant done 3");
     fetchDatesFromExpenseList();
-    print("Aryant done 4");
     initOtherMembers();
-    print("Aryant done 5");
+    _budgetMetaData = await _getMetaDataDatabase();
+    // print(_budgetMetaData.totalBudget);
+    // print("loaded meta");
     isLoaded = true;
-    print(expenseList.length);
+
     notifyListeners();
   }
 
-  /*
   //function to get the instance of the database
-  Future<Database> get database async {
-    if (_database == null) _database = await _initializeDatabase();
+  Future<Database> getDatabase() async {
+    if (_database == null) _database = await initDatabase();
     return _database;
   }
-
-  //function to initialize the database foe the first time
-  Future<Database> _initializeDatabase() async {
-    //Get the directory for path for android and iOS to store database.
-    String directory = await getDatabasesPath();
-    String path = join(directory, "budget.db");
-    //open/ create database at a given path
-    return await openDatabase(path, version: 1, onCreate: _createDB);
-  }*/
 
   static initDatabase() async {
     String folder = await getDatabasesPath();
     String path = join(folder, "budget.db");
     _database = await openDatabase(path, version: 1, onCreate: _onCreate);
-    isLoaded = true;
+    //isLoaded = true;
   }
 
   static Future _onCreate(Database db, int newVersion) async {
+    //print("EN: onCreate-start");
     await db.execute("CREATE TABLE budgetTable"
         "("
         "expenseId INTEGER PRIMARY KEY,"
@@ -81,15 +71,21 @@ class ExpenseNotifier extends ChangeNotifier {
         "expenseCategory TEXT,"
         "expenseRemark TEXT"
         ")");
+    print("creating meta");
+    await db.execute("CREATE TABLE budgetMetaDataTable "
+        "("
+        "metaDataId INTEGER PRIMARY KEY,"
+        "totalBudget DECIMAL,"
+        "endDate TEXT,"
+        "isVip INTEGER"
+        ")");
+    await db.insert("budgetMetaDataTable", _budgetMetaData.toMap());
+    //print("EN: onCreate-end");
   }
 
   //initializes the expense list and the date list
 
   //function to create the database if it does not pre-exists
-  Future _createDB(Database db, int newVersion) async {
-    await db.execute(
-        "CREATE TABLE $budgetTable($col_expenseId INTEGER PRIMARY KEY,$col_title TEXT,$col_icon TEXT,$col_expense DECIMAL,$col_date DATETIME,$col_category TEXT,$col_remark TEXT)");
-  }
 
   Future _closeDB() async {}
   //CRUD operations on the database
@@ -98,7 +94,7 @@ class ExpenseNotifier extends ChangeNotifier {
   //Read Database:
   //---------------------------------------------------------------------------------------------------------
   Future<List<Map<String, dynamic>>> _getExpenseMapList() async {
-    Database db = await _database;
+    Database db = await getDatabase();
     var result = db.rawQuery("SELECT * FROM $budgetTable");
     return result;
   }
@@ -107,7 +103,7 @@ class ExpenseNotifier extends ChangeNotifier {
   //Insert in database:
   //---------------------------------------------------------------------------------------------------------
   Future<int> _insertExpenseInDatabase(ExpenseModel expense) async {
-    Database db = await _database;
+    Database db = await getDatabase();
     var result = await db.insert(budgetTable, expense.toMap());
     return result;
   }
@@ -116,7 +112,7 @@ class ExpenseNotifier extends ChangeNotifier {
   //Update in database:
   //---------------------------------------------------------------------------------------------------------
   Future<int> _updateExpenseInDatabase(ExpenseModel expense) async {
-    Database db = await _database;
+    Database db = await getDatabase();
     var result = db.update(budgetTable, expense.toMap(),
         where: "$col_expenseId=?", whereArgs: [expense.id]);
     return result;
@@ -126,108 +122,155 @@ class ExpenseNotifier extends ChangeNotifier {
   //Delete in database:
   //---------------------------------------------------------------------------------------------------------
   Future<int> _deleteExpenseFromDatabase(int id) async {
-    Database db = await _database;
+    Database db = await getDatabase();
     var result =
         db.rawDelete("DELETE FROM $budgetTable WHERE $col_expenseId = $id");
     return result;
+  }
+
+  //---------------------------------------------------------------------------------------------------------
+  //Update Metadata in database:
+  //---------------------------------------------------------------------------------------------------------
+  Future<int> _updateMetaDataDatabase() async {
+    //print("_updateMetaData");
+    Database db = await getDatabase();
+    int i = await db.update("budgetMetaDataTable", _budgetMetaData.toMap(),
+        where: "metaDataId = ?", whereArgs: [1000]);
+    //print("i: $i");
+    _budgetMetaData = await _getMetaDataDatabase();
+    return i;
+  }
+
+  //---------------------------------------------------------------------------------------------------------
+  //get Metadata in database:
+  //---------------------------------------------------------------------------------------------------------
+  Future<BudgetMetaData> _getMetaDataDatabase() async {
+    Database db = await getDatabase();
+    var result = await db
+        .rawQuery("SELECT * FROM budgetMetaDataTable WHERE metaDataId = 1000");
+    print("null result: ${result == null}");
+    print("length : ${result.length}");
+    print("id: ${result[0]["metaDataId"] is Object}");
+    print("total budget: ${result[0]["totalBudget"]}");
+    print("endDate: ${result[0]["endDate"]}");
+    print("isVip: ${result[0]["isVip"]}");
+
+    //print("${result[0]["totalBudget"].toString()}");
+    //print(" tot bdg : ${BudgetMetaData.fromMap(result[0]).totalBudget == 0.0}");
+    return BudgetMetaData.fromMap(result[0]);
   }
 
   //--------------------------------------------------------------------------------------------------------
   //Notifier Members
   //--------------------------------------------------------------------------------------------------------
 
-  List<ExpenseModel> expenseList = []; // ExpenseModel.expenseList;
-  List<String> dateList = []; //ExpenseModel.dateList;
+  static List<ExpenseModel> expenseList = []; // ExpenseModel.expenseList;
+  static List<String> dateList = []; //ExpenseModel.dateList;
+  static late BudgetMetaData _budgetMetaData =
+      BudgetMetaData.singletonBudgetMetaData;
 
-  double ExpenseOfTheMonth = 0.0; //displayed on the top card of home screen
-  double IncomeOfTheMonth = 0.0; //displayed on the top card of home screen
+  static double ExpenseOfTheMonth =
+      0.0; //displayed on the top card of home screen
+  static double IncomeOfTheMonth =
+      0.0; //displayed on the top card of home screen
+
+  static double totalBudget = 0.0;
+  static late DateTime endDate;
 
   //to fill dates with list of dates
   void fetchDatesFromExpenseList() {
     expenseList.forEach((expense) {
-      if (!dateList.contains(myDateFormatter(expense.date)))
+      if (!dateList.contains(myDateFormatter(expense.date))) {
         dateList.add(myDateFormatter(expense.date));
+      }
     });
   }
 
   // initializes the total expense and income that are displayed on the top of the screen
   initOtherMembers() {
+    IncomeOfTheMonth = ExpenseOfTheMonth = 0.0;
     expenseList.forEach((expense) {
       if (expense.date.month == DateTime.now().month &&
           expense.category == "Income") IncomeOfTheMonth += expense.expense;
+
       if (expense.date.month == DateTime.now().month &&
-          expense.category == "Expenses") ExpenseOfTheMonth += expense.expense;
+          expense.category == "Expense") ExpenseOfTheMonth += expense.expense;
     });
-    // for (var e in expenseList) {
-    //   if (e.date.month == DateTime.now().month && e.category == "Income") {
-    //     IncomeOfTheMonth += e.expense;
-    //   }
-    //   if (e.date.month == DateTime.now().month && e.category == "Expenses") {
-    //     ExpenseOfTheMonth += e.expense;
-    //   }
-    // }
   }
 
   //to change the global total expense and the income on addition and deletion in the current month
   updateMonthlyExpenseAndIncome(ExpenseModel e, int action) {
     if (action == 1) {
       if (e.date.month == DateTime.now().month && e.category == "Income") {
+        print("to add $IncomeOfTheMonth");
         IncomeOfTheMonth += e.expense;
+        print("to add $IncomeOfTheMonth");
+        notifyListeners();
       }
-      if (e.date.month == DateTime.now().month && e.category == "Expenses") {
+      if (e.date.month == DateTime.now().month && e.category == "Expense") {
+        print("to add $ExpenseOfTheMonth");
         ExpenseOfTheMonth += e.expense;
+        print("to add $ExpenseOfTheMonth");
+        notifyListeners();
       }
     }
     if (action == -1) {
+      print("to delete");
       if (e.date.month == DateTime.now().month && e.category == "Income") {
+        print("to remove $IncomeOfTheMonth");
         IncomeOfTheMonth -= e.expense;
+        print("to remove $IncomeOfTheMonth");
+        notifyListeners();
       }
-      if (e.date.month == DateTime.now().month && e.category == "Expenses") {
+      if (e.date.month == DateTime.now().month && e.category == "Expense") {
+        print("to remove $IncomeOfTheMonth");
         ExpenseOfTheMonth -= e.expense;
+        print("to remove $IncomeOfTheMonth");
+        notifyListeners();
       }
     }
   }
 
   //add the expense to the list
-  Future addExpenses(ExpenseModel expense) async {
-    if (!dateList.contains(myDateFormatter(expense.date)))
+  Future addExpenses(ExpenseModel expense, {bool throughUpdate = false}) async {
+    if (!dateList.contains(myDateFormatter(expense.date))) {
       dateList.add(myDateFormatter(expense.date));
+    }
 
-    updateMonthlyExpenseAndIncome(expense, 1);
+    //updateMonthlyExpenseAndIncome(expense, 1);
 
-    expense.id = DateTime.now().microsecondsSinceEpoch;
+    if (!throughUpdate) expense.id = DateTime.now().microsecondsSinceEpoch;
     expenseList.add(expense);
+
+    initOtherMembers();
 
     notifyListeners();
 
     await _insertExpenseInDatabase(expense);
-
-    print("added");
 
     return 1;
   }
 
   //delete expense from the list
   void deleteExpenses(ExpenseModel expense) async {
-    updateMonthlyExpenseAndIncome(getObjectWith(expense.id)!, -1);
-
+    //updateMonthlyExpenseAndIncome(expense, -1);
     expenseList.removeWhere((item) => item.id == expense.id);
     await _deleteExpenseFromDatabase(expense.id);
+    initOtherMembers();
     notifyListeners();
   }
 
   //update expense in the list
   void updateExpenses(ExpenseModel expense) async {
     deleteExpenses(expense);
-    addExpenses(expense);
+    addExpenses(expense, throughUpdate: true);
     await _updateExpenseInDatabase(expense);
-    notifyListeners();
   }
 
   //to segregate the expense list on the basis of the list
   List<ExpenseModel> Filter(String formattedDate) {
     List<ExpenseModel> listOfDate = [];
-    ExpenseModel.expenseList.forEach((expense) {
+    expenseList.forEach((expense) {
       if (myDateFormatter(expense.date) == formattedDate)
         listOfDate.add(expense);
     });
@@ -236,5 +279,55 @@ class ExpenseNotifier extends ChangeNotifier {
 
   ExpenseModel? getObjectWith(int id) {
     for (var expense in expenseList) if (expense.id == id) return expense;
+  }
+
+  static BudgetMetaData getMetaData() {
+    return _budgetMetaData;
+  }
+
+  updateMetaData() async {
+    await _updateMetaDataDatabase();
+    print("updated in db");
+    notifyListeners();
+  }
+}
+
+@protected
+class BudgetMetaData {
+  int metaDataId = 1000;
+  double totalBudget = 0.0;
+  DateTime endDate = DateTime.now();
+  bool isVip = false;
+
+  BudgetMetaData._internal(); //private factory default constructor
+
+  static BudgetMetaData singletonBudgetMetaData =
+      BudgetMetaData._internal(); //singleton object copy
+
+  factory BudgetMetaData.parameterized_BudgetMetaData(
+      {required double totalBudget,
+      required DateTime endDate,
+      required bool isVip}) //parameterized factory constructor
+  {
+    singletonBudgetMetaData.totalBudget = totalBudget;
+    singletonBudgetMetaData.endDate = endDate;
+    singletonBudgetMetaData.isVip = isVip;
+    return singletonBudgetMetaData;
+  }
+
+  factory BudgetMetaData.fromMap(Map<String, dynamic> map) {
+    return BudgetMetaData.parameterized_BudgetMetaData(
+        totalBudget: map["totalBudget"].toDouble(),
+        endDate: DateTime.parse(map["endDate"]),
+        isVip: map["isVip"] == 1 ? true : false);
+  }
+
+  Map<String, Object?> toMap() {
+    return {
+      "metaDataId": this.metaDataId,
+      "totalBudget": this.totalBudget,
+      "endDate": this.endDate.toString(),
+      "isVip": this.isVip ? 1 : 0
+    };
   }
 }

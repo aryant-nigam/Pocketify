@@ -58,16 +58,6 @@ class _CalculatorScreenState extends State<CalculatorScreen>
     super.didChangeDependencies();
     expenseModel = widget.expenseModel;
     _fabPosition = _initialSheetChildSize * context.screenHeight;
-    // cost = expenseModel.expense.toString();
-
-    /*_iconSelected = expenseModel.icon;
-    newEdittedExpense = expenseModel;
-    _date = expenseModel.date;
-    _time = TimeOfDay(
-        hour: expenseModel.date.hour, minute: expenseModel.date.minute);
-    _remark = expenseModel.remark;
-    _categorySelected = expenseModel.category;
-    _title = expenseModel.title;*/
   }
 
   @override
@@ -99,15 +89,16 @@ class _CalculatorScreenState extends State<CalculatorScreen>
                   color: Vx.purple100,
                 ),
                 onTap: () async {
-                  if (edittedExpense.category == "Expenses")
-                    edittedExpense.expense = -1 * edittedExpense.expense;
+                  if (edittedExpense.category == "Expense")
+                    edittedExpense.expense = -1 * edittedExpense.expense.abs();
+                  if (edittedExpense.category == "Income")
+                    edittedExpense.expense = edittedExpense.expense.abs();
+
                   if (widget.expenseModel.id != -1)
                     expenseNotifier.updateExpenses(edittedExpense);
-                  else {
+                  else
                     await expenseNotifier.addExpenses(edittedExpense);
-                    print(expenseNotifier.expenseList.length);
-                    print(expenseNotifier.dateList.length);
-                  }
+
                   CustomToast(
                           context: context,
                           backgroundColor: Vx.purple100,
@@ -196,7 +187,7 @@ class _CalculatorScreenState extends State<CalculatorScreen>
                                                   edittedExpense.icon =
                                                       expenseCategorySelected_ICON;
                                                   edittedExpense.category =
-                                                      "Expenses";
+                                                      "Expense";
                                                   edittedExpense.title =
                                                       expenseCategorySelected_ICON
                                                           .split("/")[2]
@@ -452,15 +443,6 @@ class _CalculatorScreenState extends State<CalculatorScreen>
                                   : "",
                             ),
                           ).p0(),
-                          /*title: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            "Remark  ".text.size(13).bold.make(),
-                            //"${widget.expenseModel.remark ?? " "}".text.make(),
-
-                            //hastobe an edit text
-                          ],
-                        ),*/
                         ),
                       ],
                     ).p4(),
@@ -512,8 +494,6 @@ class _CalculatorScreenState extends State<CalculatorScreen>
                           ),
                         ).p0(),
                       ).h(310);
-
-                      //return SizedBox();
                     },
                   ),
                 ),
@@ -532,13 +512,6 @@ class _CalculatorScreenState extends State<CalculatorScreen>
                       double result =
                           exp.evaluate(EvaluationType.REAL, ContextModel());
                       edittedExpense.expense = result;
-                      //print("Aryant: ${edittedExpense.expense}");
-                      // expenseNotifier.updateExpenses(edittedExpense);
-                      //saveExpenseChanges();
-                      //print("expense updated");
-                      //  newEdittedExpense.updateExpense();
-                      //cost = result.toStringAsFixed(2);
-                      //print("Aryant: ${cost}");
                       _equation = _equation.replaceAll('/', '÷');
                       _equation = _equation.replaceAll('*', 'x');
                       setState(() {});
