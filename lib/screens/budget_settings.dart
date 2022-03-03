@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pocketify/utils/ExpenseNotifier.dart';
+import 'package:pocketify/utils/custom_toast.dart';
 import 'package:pocketify/utils/themes.dart';
 import 'package:provider/provider.dart';
 import 'package:velocity_x/velocity_x.dart';
+
+import '../utils/app_icons.dart';
 
 class BudgetSettings extends StatefulWidget {
   const BudgetSettings({Key? key}) : super(key: key);
@@ -15,7 +18,8 @@ class BudgetSettings extends StatefulWidget {
 }
 
 class _BudgetSettingsState extends State<BudgetSettings> {
-  late int _date = -1;
+  late int _day = ExpenseNotifier.getMetaData().endDate.day;
+  double totalBudget = ExpenseNotifier.getMetaData().totalBudget;
   @override
   Widget build(BuildContext context) {
     return Consumer<ExpenseNotifier>(
@@ -33,6 +37,35 @@ class _BudgetSettingsState extends State<BudgetSettings> {
             ),
           ),
           title: "Settings".text.color(Colors.white).size(18).make(),
+          actions: [
+            GestureDetector(
+              child: Image.asset(
+                AppIcons.save_changes,
+                height: 30,
+                width: 30,
+                color: ExpenseNotifier.themeManager.getTheme().toastBaseColor,
+              ),
+              onTap: () async {
+                print("ontap");
+                ExpenseNotifier.getMetaData().totalBudget = totalBudget;
+                ExpenseNotifier.getMetaData().endDate =
+                    DateTime(DateTime.now().year, DateTime.now().month, _day);
+                print(
+                    "${ExpenseNotifier.getMetaData().totalBudget}  ${ExpenseNotifier.getMetaData().endDate}");
+                await expenseNotifier.updateMetaData();
+                CustomToast(
+                        context: context,
+                        type: 0,
+                        msg: "Updated your budget settings",
+                        backgroundColor: ExpenseNotifier.themeManager
+                            .getTheme()
+                            .toastBaseColor,
+                        textColor:
+                            ExpenseNotifier.themeManager.getTheme().cardColor)
+                    .create();
+              },
+            ).pOnly(right: 20)
+          ],
         ),
         body: SingleChildScrollView(
           child: Container(
@@ -59,17 +92,28 @@ class _BudgetSettingsState extends State<BudgetSettings> {
                   children: [
                     Icon(
                       Icons.edit,
-                      color: context.cardColor,
+                      color: ExpenseNotifier.themeManager.getTheme().cardColor,
                     ).pOnly(top: 20, right: 8),
                     Flexible(
                       child: TextField(
-                        cursorColor: context.cardColor,
+                        onChanged: (newBudget) {
+                          totalBudget = double.parse(newBudget);
+                          setState(() {});
+                        },
+                        keyboardType: TextInputType.number,
+                        cursorColor:
+                            ExpenseNotifier.themeManager.getTheme().cardColor,
                         style: TextStyle(
                             color: Color.fromRGBO(96, 9, 100, 0.6),
                             fontSize: 13,
                             fontWeight: FontWeight.bold),
                         decoration: InputDecoration(
-                          hintText: "Enter your planned amount for month",
+                          hintText:
+                              ExpenseNotifier.getMetaData().totalBudget == 0.0
+                                  ? "Enter your planned amount for month"
+                                  : ExpenseNotifier.getMetaData()
+                                      .totalBudget
+                                      .toString(),
                           hintStyle: TextStyle(
                               fontSize: 14,
                               color: Color.fromRGBO(96, 9, 100, 0.6)),
@@ -77,14 +121,19 @@ class _BudgetSettingsState extends State<BudgetSettings> {
                               borderSide: BorderSide(
                                   color: Color.fromRGBO(96, 9, 100, 0.5))),
                           focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: context.cardColor)),
+                              borderSide: BorderSide(
+                                  color: ExpenseNotifier.themeManager
+                                      .getTheme()
+                                      .cardColor)),
                           label: Text(
                             "Amount",
                             style: TextStyle(
-                                color: context.cardColor,
+                                color: ExpenseNotifier.themeManager
+                                    .getTheme()
+                                    .cardColor,
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold),
-                          ),
+                          ).pSymmetric(h: 10),
                         ),
                       ).pSymmetric(h: 10),
                     )
@@ -94,7 +143,7 @@ class _BudgetSettingsState extends State<BudgetSettings> {
                   children: [
                     Icon(
                       Icons.edit,
-                      color: context.cardColor,
+                      color: ExpenseNotifier.themeManager.getTheme().cardColor,
                     ).pOnly(right: 8),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,7 +151,9 @@ class _BudgetSettingsState extends State<BudgetSettings> {
                         Text(
                           "Set Start Date",
                           style: TextStyle(
-                              color: context.cardColor,
+                              color: ExpenseNotifier.themeManager
+                                  .getTheme()
+                                  .cardColor,
                               fontSize: 15,
                               fontWeight: FontWeight.bold),
                         ).pSymmetric(h: 10),
@@ -142,17 +193,20 @@ class _BudgetSettingsState extends State<BudgetSettings> {
                                                     Radio(
                                                       toggleable: true,
                                                       value: index + 1,
-                                                      groupValue: _date,
+                                                      groupValue: _day,
                                                       activeColor:
-                                                          context.cardColor,
+                                                          ExpenseNotifier
+                                                              .themeManager
+                                                              .getTheme()
+                                                              .cardColor,
                                                       onChanged: (int? value) {
                                                         updateDialogState(() {
-                                                          _date = value!;
+                                                          _day = value!;
                                                         });
                                                         setState(() {
-                                                          _date = value!;
+                                                          _day = value!;
                                                         });
-                                                        print(_date);
+                                                        print(_day);
                                                       },
                                                     ).pOnly(right: 10),
                                                     "${index + 1}"
@@ -174,7 +228,10 @@ class _BudgetSettingsState extends State<BudgetSettings> {
                                               },
                                               child: "OK"
                                                   .text
-                                                  .color(context.cardColor)
+                                                  .color(ExpenseNotifier
+                                                      .themeManager
+                                                      .getTheme()
+                                                      .cardColor)
                                                   .size(15)
                                                   .bold
                                                   .make())
@@ -185,19 +242,18 @@ class _BudgetSettingsState extends State<BudgetSettings> {
                                 });
                           },
                           child: Text(
-                            _date == -1
-                                ? DateFormat("dd-MM-yyyy")
-                                    .format(DateTime.now())
-                                : DateFormat("dd-MM-yyyy").format(DateTime(
-                                        DateTime.now().year,
-                                        DateTime.now().month,
-                                        _date)) +
-                                    " - " +
-                                    DateFormat("dd-MM-YYYY").format(DateTime(
-                                            DateTime.now().year,
-                                            DateTime.now().month,
-                                            _date)
-                                        .add(Duration(days: 30))),
+                            DateFormat("dd-MM-yyyy").format(DateTime(
+                                    ExpenseNotifier.getMetaData().endDate.year,
+                                    ExpenseNotifier.getMetaData().endDate.month,
+                                    _day)) +
+                                " - " +
+                                DateFormat("dd-MM-yyyy").format(
+                                  DateTime(DateTime.now().year,
+                                          DateTime.now().month, _day)
+                                      .add(
+                                    Duration(days: 30),
+                                  ),
+                                ),
                             style: TextStyle(
                                 color: Color.fromRGBO(96, 9, 100, 0.6),
                                 fontSize: 13,
@@ -216,3 +272,57 @@ class _BudgetSettingsState extends State<BudgetSettings> {
     });
   }
 }
+/*
+ Row(
+                  children: [
+                    Icon(
+                      Icons.edit,
+                      color: context.cardColor,
+                    ).pOnly(top: 20, right: 8),
+                    Column(
+                      //crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Amount",
+                          style: TextStyle(
+                              color: context.cardColor,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold),
+                        ).pSymmetric(h: 10),
+                        Flexible(
+                          child: TextField(
+                            onChanged: (newBudget) {
+                              totalBudget = double.parse(newBudget);
+                              setState(() {});
+                            },
+                            keyboardType: TextInputType.number,
+                            cursorColor: context.cardColor,
+                            style: TextStyle(
+                                color: Color.fromRGBO(96, 9, 100, 0.6),
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold),
+                            decoration: InputDecoration(
+                              hintText:
+                                  ExpenseNotifier.getMetaData().totalBudget ==
+                                          0.0
+                                      ? "Enter your planned amount for month"
+                                      : ExpenseNotifier.getMetaData()
+                                          .totalBudget
+                                          .toString(),
+                              hintStyle: TextStyle(
+                                  fontSize: 14,
+                                  color: Color.fromRGBO(96, 9, 100, 0.6)),
+                              enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Color.fromRGBO(96, 9, 100, 0.5))),
+                              focusedBorder: UnderlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: context.cardColor)),
+                            ),
+                          ).pSymmetric(h: 10),
+                        ),
+                      ],
+                    )
+                  ],
+                ).pSymmetric(h: 15, v: 10),
+* */

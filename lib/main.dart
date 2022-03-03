@@ -1,5 +1,6 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pocketify/models/expense_model.dart';
 import 'package:pocketify/screens/calculator_screen.dart';
 import 'package:pocketify/screens/edit_screen.dart';
@@ -15,6 +16,7 @@ import 'package:provider/provider.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   ExpenseNotifier.initDatabase();
+
   runApp(
     ChangeNotifierProvider<ExpenseNotifier>(
       create: (_) {

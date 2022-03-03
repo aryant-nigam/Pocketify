@@ -58,16 +58,6 @@ class _CalculatorScreenState extends State<CalculatorScreen>
     super.didChangeDependencies();
     expenseModel = widget.expenseModel;
     _fabPosition = _initialSheetChildSize * context.screenHeight;
-    // cost = expenseModel.expense.toString();
-
-    /*_iconSelected = expenseModel.icon;
-    newEdittedExpense = expenseModel;
-    _date = expenseModel.date;
-    _time = TimeOfDay(
-        hour: expenseModel.date.hour, minute: expenseModel.date.minute);
-    _remark = expenseModel.remark;
-    _categorySelected = expenseModel.category;
-    _title = expenseModel.title;*/
   }
 
   @override
@@ -89,29 +79,34 @@ class _CalculatorScreenState extends State<CalculatorScreen>
               ),
             ),
             title: "Edit".text.color(Colors.white).size(18).make(),
-            backgroundColor: context.cardColor,
+            backgroundColor: ExpenseNotifier.themeManager.getTheme().cardColor,
             actions: [
               GestureDetector(
                 child: Image.asset(
                   AppIcons.save_changes,
                   height: 30,
                   width: 30,
-                  color: Vx.purple100,
+                  color: Vx.white,
                 ),
                 onTap: () async {
-                  if (edittedExpense.category == "Expenses")
-                    edittedExpense.expense = -1 * edittedExpense.expense;
+                  if (edittedExpense.category == "Expense")
+                    edittedExpense.expense = -1 * edittedExpense.expense.abs();
+                  if (edittedExpense.category == "Income")
+                    edittedExpense.expense = edittedExpense.expense.abs();
+
                   if (widget.expenseModel.id != -1)
                     expenseNotifier.updateExpenses(edittedExpense);
-                  else {
+                  else
                     await expenseNotifier.addExpenses(edittedExpense);
-                    print(expenseNotifier.expenseList.length);
-                    print(expenseNotifier.dateList.length);
-                  }
+
                   CustomToast(
                           context: context,
-                          backgroundColor: Vx.purple100,
-                          textColor: context.cardColor,
+                          type: 0,
+                          backgroundColor: ExpenseNotifier.themeManager
+                              .getTheme()
+                              .toastBaseColor,
+                          textColor:
+                              ExpenseNotifier.themeManager.getTheme().cardColor,
                           msg: "Expense has been updated")
                       .create();
                 },
@@ -127,7 +122,7 @@ class _CalculatorScreenState extends State<CalculatorScreen>
                 Container(
                   width: context.screenWidth,
                   height: 60,
-                  color: context.cardColor,
+                  color: ExpenseNotifier.themeManager.getTheme().cardColor,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -163,7 +158,10 @@ class _CalculatorScreenState extends State<CalculatorScreen>
                                               indicator: UnderlineTabIndicator(
                                                 borderSide: BorderSide(
                                                   width: 2,
-                                                  color: context.cardColor,
+                                                  color: ExpenseNotifier
+                                                      .themeManager
+                                                      .getTheme()
+                                                      .cardColor,
                                                 ),
                                               ),
                                               labelPadding:
@@ -172,7 +170,10 @@ class _CalculatorScreenState extends State<CalculatorScreen>
                                               indicatorPadding:
                                                   const EdgeInsets.only(
                                                       right: 20),
-                                              labelColor: context.cardColor,
+                                              labelColor: ExpenseNotifier
+                                                  .themeManager
+                                                  .getTheme()
+                                                  .cardColor,
                                               unselectedLabelColor: Vx.gray400,
                                               tabs: [
                                                 Text(
@@ -196,7 +197,7 @@ class _CalculatorScreenState extends State<CalculatorScreen>
                                                   edittedExpense.icon =
                                                       expenseCategorySelected_ICON;
                                                   edittedExpense.category =
-                                                      "Expenses";
+                                                      "Expense";
                                                   edittedExpense.title =
                                                       expenseCategorySelected_ICON
                                                           .split("/")[2]
@@ -435,7 +436,9 @@ class _CalculatorScreenState extends State<CalculatorScreen>
                             onChanged: (edittedRemark) {
                               edittedExpense.remark = edittedRemark;
                             },
-                            cursorColor: context.cardColor,
+                            cursorColor: ExpenseNotifier.themeManager
+                                .getTheme()
+                                .cardColor,
                             style: TextStyle(fontSize: 13),
                             decoration: InputDecoration(
                               label: "Remark".text.size(13).bold.make(),
@@ -452,15 +455,6 @@ class _CalculatorScreenState extends State<CalculatorScreen>
                                   : "",
                             ),
                           ).p0(),
-                          /*title: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            "Remark  ".text.size(13).bold.make(),
-                            //"${widget.expenseModel.remark ?? " "}".text.make(),
-
-                            //hastobe an edit text
-                          ],
-                        ),*/
                         ),
                       ],
                     ).p4(),
@@ -512,8 +506,6 @@ class _CalculatorScreenState extends State<CalculatorScreen>
                           ),
                         ).p0(),
                       ).h(310);
-
-                      //return SizedBox();
                     },
                   ),
                 ),
@@ -521,7 +513,8 @@ class _CalculatorScreenState extends State<CalculatorScreen>
                   right: 10,
                   bottom: _fabPosition - (30 + (30 * _reductionRatio)),
                   child: FloatingActionButton(
-                    backgroundColor: context.cardColor,
+                    backgroundColor:
+                        ExpenseNotifier.themeManager.getTheme().cardColor,
                     onPressed: () {
                       _isEditing = false;
                       Parser parser = Parser();
@@ -532,13 +525,6 @@ class _CalculatorScreenState extends State<CalculatorScreen>
                       double result =
                           exp.evaluate(EvaluationType.REAL, ContextModel());
                       edittedExpense.expense = result;
-                      //print("Aryant: ${edittedExpense.expense}");
-                      // expenseNotifier.updateExpenses(edittedExpense);
-                      //saveExpenseChanges();
-                      //print("expense updated");
-                      //  newEdittedExpense.updateExpense();
-                      //cost = result.toStringAsFixed(2);
-                      //print("Aryant: ${cost}");
                       _equation = _equation.replaceAll('/', '÷');
                       _equation = _equation.replaceAll('*', 'x');
                       setState(() {});
@@ -556,7 +542,8 @@ class _CalculatorScreenState extends State<CalculatorScreen>
                     bottom: _fabPosition - (30 + (30 * _reductionRatio)),
                     child: Container(
                       decoration: BoxDecoration(
-                          color: context.cardColor,
+                          color:
+                              ExpenseNotifier.themeManager.getTheme().cardColor,
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       height: 5,
                       width: 25,
@@ -588,7 +575,8 @@ class Calculator extends StatelessWidget {
           Container(
             height: 20,
             child: Align(
-              child: 30.widthBox.backgroundColor(context.cardColor),
+              child: 30.widthBox.backgroundColor(
+                  ExpenseNotifier.themeManager.getTheme().cardColor),
               alignment: Alignment.center,
             ),
           ),
@@ -649,8 +637,8 @@ class Calculator extends StatelessWidget {
                       addInEquation("÷");
                     },
                     style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(context.cardColor)),
+                        backgroundColor: MaterialStateProperty.all(
+                            ExpenseNotifier.themeManager.getTheme().cardColor)),
                     child: Text(
                       "÷",
                       style: TextStyle(
@@ -719,8 +707,8 @@ class Calculator extends StatelessWidget {
                       addInEquation("x");
                     },
                     style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(context.cardColor)),
+                        backgroundColor: MaterialStateProperty.all(
+                            ExpenseNotifier.themeManager.getTheme().cardColor)),
                     child: Text(
                       "x",
                       style: TextStyle(
@@ -789,8 +777,8 @@ class Calculator extends StatelessWidget {
                       addInEquation("-");
                     },
                     style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(context.cardColor)),
+                        backgroundColor: MaterialStateProperty.all(
+                            ExpenseNotifier.themeManager.getTheme().cardColor)),
                     child: Text(
                       "-",
                       style: TextStyle(
@@ -844,8 +832,8 @@ class Calculator extends StatelessWidget {
                       deleteInEquation();
                     },
                     style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(AppTheme.FAB_dark)),
+                        backgroundColor: MaterialStateProperty.all(
+                            ExpenseNotifier.themeManager.getTheme().cardColor)),
                     child: Icon(Icons.backspace_rounded).centered(),
                   ).pOnly(left: 8),
                 ),
@@ -856,8 +844,8 @@ class Calculator extends StatelessWidget {
                       addInEquation("+");
                     },
                     style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(context.cardColor)),
+                        backgroundColor: MaterialStateProperty.all(
+                            ExpenseNotifier.themeManager.getTheme().cardColor)),
                     child: Text(
                       "+",
                       style: TextStyle(
@@ -924,7 +912,7 @@ class _ExpenseCategoryListBuilderState
                   visible: index == selectedCategory,
                   child: Icon(
                     Icons.done,
-                    color: context.cardColor,
+                    color: ExpenseNotifier.themeManager.getTheme().cardColor,
                   ),
                 ),
                 onTap: () {
@@ -975,7 +963,7 @@ class _IncomeCategoryListBuilderState extends State<IncomeCategoryListBuilder> {
                   visible: index == selectedCategory,
                   child: Icon(
                     Icons.done,
-                    color: context.cardColor,
+                    color: ExpenseNotifier.themeManager.getTheme().cardColor,
                   ),
                 ),
                 onTap: () {

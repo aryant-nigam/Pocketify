@@ -31,6 +31,7 @@ class _ExpenseVisualizationScreenState
       builder: (context, expenseNotifier, child) {
         return Scaffold(
           appBar: AppBar(
+            backgroundColor: ExpenseNotifier.themeManager.getTheme().cardColor,
             leading: GestureDetector(
               onTap: () {
                 Navigator.pop(context);
@@ -57,7 +58,9 @@ class _ExpenseVisualizationScreenState
                         text: "Your Expenses",
                         textStyle: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: context.cardColor,
+                            color: ExpenseNotifier.themeManager
+                                .getTheme()
+                                .cardColor,
                             fontFamily: GoogleFonts.poppins().fontFamily)),
                     legend: Legend(
                       isVisible: true,
@@ -66,7 +69,7 @@ class _ExpenseVisualizationScreenState
                     tooltipBehavior: _tooltipBehavior,
                     series: <CircularSeries>[
                       PieSeries<ExpenseModel, String>(
-                          dataSource: expenseNotifier.expenseList,
+                          dataSource: ExpenseNotifier.expenseList,
                           xValueMapper: (ExpenseModel expense, _) =>
                               "${DateFormat("dd-MM-yyyy").format(expense.date)}",
                           yValueMapper: (ExpenseModel expense, _) =>

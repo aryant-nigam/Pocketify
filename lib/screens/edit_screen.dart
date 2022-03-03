@@ -37,11 +37,13 @@ class _EditScreenState extends State<EditScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("EB : ${ExpenseNotifier.themeManager.getTheme().cardColor}");
     return Consumer<ExpenseNotifier>(
       builder: (context, expenseNotifier, child) {
         expense = expenseNotifier.getObjectWith(widget.id)!;
         return Scaffold(
           appBar: AppBar(
+            backgroundColor: ExpenseNotifier.themeManager.getTheme().cardColor,
             leading: GestureDetector(
               onTap: () {
                 Navigator.pop(context);
@@ -136,8 +138,10 @@ class _EditScreenState extends State<EditScreen> {
                         ),
                         title: "Remark".text.size(13).make(),
                         trailing: InkWell(
-                          splashColor: context.cardColor,
-                          focusColor: context.cardColor,
+                          splashColor:
+                              ExpenseNotifier.themeManager.getTheme().cardColor,
+                          focusColor:
+                              ExpenseNotifier.themeManager.getTheme().cardColor,
                           child: Text(
                             expense.remark != null
                                 ? (expense.remark!.length < 25
@@ -169,7 +173,10 @@ class _EditScreenState extends State<EditScreen> {
                                             child: "OK"
                                                 .text
                                                 .bold
-                                                .color(context.cardColor)
+                                                .color(ExpenseNotifier
+                                                    .themeManager
+                                                    .getTheme()
+                                                    .cardColor)
                                                 .make())
                                       ],
                                       actionsPadding: EdgeInsets.all(5),
@@ -185,8 +192,8 @@ class _EditScreenState extends State<EditScreen> {
                   width: 100,
                   child: ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all(context.cardColor),
+                      backgroundColor: MaterialStateProperty.all(
+                          ExpenseNotifier.themeManager.getTheme().cardColor),
                     ),
                     child: Row(
                       children: [

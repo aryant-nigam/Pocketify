@@ -1,8 +1,10 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pocketify/utils/ExpenseNotifier.dart';
 import 'package:pocketify/utils/routes.dart';
+import 'package:provider/provider.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:lottie/lottie.dart';
 import 'package:lottie/src/lottie_image_asset.dart';
@@ -33,7 +35,8 @@ class _SplashScreenState extends State<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Column(children: [
-              Lottie.asset("assets/ss.json"),
+              Lottie.asset(
+                  "assets/splash_${ExpenseNotifier.themeManager.getThemeName()}.json"),
               Text(
                 "Pocketify",
                 style: TextStyle(
@@ -82,3 +85,21 @@ class _SplashScreenState extends State<SplashScreen> {
     Navigator.pushReplacementNamed(context, Routes.HomeScreenRoute);
   }
 }
+/*Consumer<ExpenseNotifier>(
+      builder: (context, expenseNotifier, child) {
+        if (ExpenseNotifier.isLoaded) {
+
+        } else {
+          return Scaffold(
+            body: Container(
+              color: Colors.white,
+              child: Center(
+                child: CircularProgressIndicator(
+                  color: context.cardColor,
+                ),
+              ),
+            ),
+          );
+        }
+      },
+    );*/

@@ -7,6 +7,7 @@ import 'package:pocketify/utils/app_icons.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class CustomToast {
+  late int type;
   late FToast fToast;
   late String msg;
   late Color backgroundColor, textColor;
@@ -14,6 +15,7 @@ class CustomToast {
 
   CustomToast(
       {required this.context,
+      required this.type,
       required this.msg,
       required this.backgroundColor,
       required this.textColor}) {
@@ -30,7 +32,7 @@ class CustomToast {
         mainAxisSize: MainAxisSize.min,
         children: [
           LottieBuilder.asset(
-            "assets/done.json",
+            type == 0 ? "assets/done.json" : "assets/error.json",
             height: 45,
             width: 45,
           ),

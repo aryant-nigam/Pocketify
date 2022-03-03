@@ -49,6 +49,10 @@ dependencies:
   fluttertoast: ^8.0.8
   sqflite:
   path_provider:
+  permission_handler: ^9.2.0
+  csv: ^5.0.1
+  syncfusion_flutter_xlsio: ^19.4.54-beta
+  open_file:
 
 
 dev_dependencies:
